@@ -133,9 +133,6 @@ public class Scanner {
                             }
                             if (!buf.isEmpty()) {
                                 if (buf.get() != '\n') {
-                                    // Считать символ и увеличить позицию
-                                    // Если \n - оставить как есть
-                                    // Иначе вернуть позицию обратно
                                     buf.position(buf.position() - 1);
                                 }
                             }
