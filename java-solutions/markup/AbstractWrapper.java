@@ -6,14 +6,9 @@ public class AbstractWrapper extends AbstractParent {
     protected String prefix;
     protected String suffix;
 
-    public AbstractWrapper(List<MarkdownSerializable> children) {
+    public AbstractWrapper(List<? extends TextSerializable> children) {
         super(children);
     }
-
-    // public AbstractWrapper(String prefix, String suffix, List<MarkdownSerializable> children) {
-        // this(children);
-        // this.setWrappers(prefix, suffix);
-    // }
 
     public void setWrappers(String prefix, String suffix) {
         this.prefix = prefix;
@@ -24,6 +19,13 @@ public class AbstractWrapper extends AbstractParent {
     public void toMarkdown(StringBuilder sb) {
         sb.append(this.prefix);
         super.toMarkdown(sb);
+        sb.append(this.suffix);
+    }
+
+    @Override
+    public void toHtml(StringBuilder sb) {
+        sb.append(this.prefix);
+        super.toHtml(sb);
         sb.append(this.suffix);
     }
 }

@@ -3,7 +3,7 @@ package markup;
 import java.util.List;
 
 public class Strikeout extends AbstractWrapper {
-    public Strikeout(List<MarkdownSerializable> children) {
+    public Strikeout(List<TextSerializable> children) {
         super(children);
     }
 
@@ -11,5 +11,11 @@ public class Strikeout extends AbstractWrapper {
     public void toMarkdown(StringBuilder sb) {
         super.setWrappers("~", "~");
         super.toMarkdown(sb);
+    }
+
+    @Override
+    public void toHtml(StringBuilder sb) {
+        super.setWrappers("<s>", "</s>");
+        super.toHtml(sb);
     }
 }

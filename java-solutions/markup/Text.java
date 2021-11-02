@@ -1,6 +1,6 @@
 package markup;
 
-public class Text implements MarkdownSerializable {
+public class Text implements TextSerializable {
     protected final String text;
 
     public Text(String text) {
@@ -11,4 +11,11 @@ public class Text implements MarkdownSerializable {
     public void toMarkdown(StringBuilder sb) {
         sb.append(this.text);
     }
+
+    @Override
+    public void toHtml(StringBuilder sb) {
+        sb.append(this.text);
+    }
+
+
 }
