@@ -2,7 +2,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Reverse {
+public class ReverseHexAbc2 {
+    static String toLiteral(int val) {
+        StringBuilder res = new StringBuilder();
+        if (val < 0) {
+            res.append('-');
+            val *= -1;
+        }
+        String in = Integer.toString(val);
+        for (int i = 0; i < in.length(); i++) {
+            res.append((char) (in.charAt(i) - '0' + 'a'));
+        }
+        return res.toString();
+    }
+
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         ArrayList<int[]> numbers = new ArrayList<int[]>();
@@ -10,8 +23,8 @@ public class Reverse {
         try {
             int[] line = new int[2];
             int lineLength = 0;
-            while (in.hasNextInt()) {
-                int val = in.nextInt();
+            while (in.hasNextNumber()) {
+                int val = in.nextNumber();
                 for (int i = 0; i < in.linesSkipped; i++) {
                     numbers.add(Arrays.copyOfRange(line, 0, lineLength));
                     line = new int[2];
@@ -37,7 +50,7 @@ public class Reverse {
         for (int i = numbers.size() - 1; i >= 0; i--) {
             int[] line = numbers.get(i);
             for (int j = line.length - 1; j >= 0; j--) {
-                System.out.print(line[j] + " ");
+                System.out.print(toLiteral(line[j]) + " ");
             }
             System.out.println();
         }
