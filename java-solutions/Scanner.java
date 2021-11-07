@@ -104,6 +104,10 @@ public class Scanner {
         dst.rewind();
     }
 
+    private static boolean isEmpty(CharBuffer buf) {
+        return buf.position() == buf.limit();
+    }
+
     // ===============================[ TOKEN SPLITTING ]================================
 
     private String nextToken(CharBuffer buf, Predicate<Character> isTokenChar, boolean mustMark) throws IOException {
@@ -116,7 +120,7 @@ public class Scanner {
             this.linesSkipped = 0;
             while (true) {
                 boolean mustExit = false;
-                while (!buf.isEmpty()) {
+                while (!isEmpty(buf)) {
                     char cur = buf.get();
                     if (isTokenChar.test(cur)) {
                         found = true;
@@ -128,10 +132,10 @@ public class Scanner {
                     } else if (this.isLineSeparator.test(cur)) {
                         this.linesSkipped++;
                         if (cur == '\r') {
-                            if (buf.isEmpty()) {
+                            if (isEmpty(buf)) {
                                 this.read(buf);
                             }
-                            if (!buf.isEmpty()) {
+                            if (!isEmpty(buf)) {
                                 if (buf.get() != '\n') {
                                     buf.position(buf.position() - 1);
                                 }
@@ -143,7 +147,7 @@ public class Scanner {
                     break;
                 }
                 this.read(buf);
-                if (buf.isEmpty()) {
+                if (isEmpty(buf)) {
                     break;
                 }
             }

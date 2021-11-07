@@ -41,7 +41,7 @@ class IntList {
         if (length % 2 == 0) {
             sb.append(c[length - 1]);
         }
-        if (!sb.isEmpty() && sb.charAt(sb.length() - 1) == ' ') {
+        if (sb.length() > 0 && sb.charAt(sb.length() - 1) == ' ') {
             sb.deleteCharAt(sb.length() - 1);
         }
         return sb.toString();
@@ -114,7 +114,7 @@ public class WsppSortedSecondG {
                             sb.append(s).append(" ");
                         }
                     }
-                    if (!sb.isEmpty() && sb.charAt(sb.length() - 1) == ' ') {
+                    if (sb.length() > 0 && sb.charAt(sb.length() - 1) == ' ') {
                         sb.deleteCharAt(sb.length() - 1);
                     }
                     output.write(sb.toString());
