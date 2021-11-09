@@ -2,20 +2,18 @@ package markup;
 
 import java.util.List;
 
-public class Emphasis extends AbstractWrapper {
-    public Emphasis(List<TextSerializable> children) {
-        super(children);
+public class Emphasis extends AbstractWrapper implements MarkElement {
+    public Emphasis(List<MarkElement> children) {
+        super(new SimpleParent(children));
     }
 
     @Override
     public void toMarkdown(StringBuilder sb) {
-        super.setWrappers("*", "*");
-        super.toMarkdown(sb);
+        super.toMarkdown(sb, "*", "*");
     }
 
     @Override
     public void toHtml(StringBuilder sb) {
-        super.setWrappers("<em>", "</em>");
-        super.toHtml(sb);
+        super.toHtml(sb, "<em>", "</em>");
     }
 }

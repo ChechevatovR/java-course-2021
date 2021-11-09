@@ -1,31 +1,21 @@
 package markup;
 
-import java.util.List;
+public abstract class AbstractWrapper implements MaybeSerializable {
+    protected MaybeSerializable content;
 
-public class AbstractWrapper extends AbstractParent {
-    protected String prefix;
-    protected String suffix;
-
-    public AbstractWrapper(List<? extends TextSerializable> children) {
-        super(children);
+    public AbstractWrapper(MaybeSerializable content) {
+        this.content = content;
     }
 
-    public void setWrappers(String prefix, String suffix) {
-        this.prefix = prefix;
-        this.suffix = suffix;
+    protected void toMarkdown(StringBuilder sb, String prefix, String suffix) {
+        sb.append(prefix);
+        content.toMarkdown(sb);
+        sb.append(suffix);
     }
 
-    @Override
-    public void toMarkdown(StringBuilder sb) {
-        sb.append(this.prefix);
-        super.toMarkdown(sb);
-        sb.append(this.suffix);
-    }
-
-    @Override
-    public void toHtml(StringBuilder sb) {
-        sb.append(this.prefix);
-        super.toHtml(sb);
-        sb.append(this.suffix);
+    protected void toHtml(StringBuilder sb, String prefix, String suffix) {
+        sb.append(prefix);
+        content.toHtml(sb);
+        sb.append(suffix);
     }
 }

@@ -1,6 +1,6 @@
 package markup;
 
-public class Text implements TextSerializable {
+public class Text implements MarkElement {
     protected final String text;
 
     public Text(String text) {
