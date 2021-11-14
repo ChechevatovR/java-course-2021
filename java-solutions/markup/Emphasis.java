@@ -2,8 +2,8 @@ package markup;
 
 import java.util.List;
 
-public class Emphasis extends AbstractWrapper implements MarkElement {
-    public Emphasis(List<MarkElement> children) {
+public class Emphasis extends AbstractWrapper implements InlineMarkup {
+    public Emphasis(List<InlineMarkup> children) {
         super(new SimpleParent(children));
     }
 

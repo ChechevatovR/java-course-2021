@@ -1,5 +1,5 @@
 package markup;
 
-public interface MarkdownSerializable extends HtmlSerializable {
+public interface MarkdownSerializable extends MaybeSerializable {
     void toMarkdown(StringBuilder sb);
 }

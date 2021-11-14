@@ -2,18 +2,18 @@ package markup;
 
 import java.util.List;
 
-public class Strong extends AbstractWrapper implements InlineMarkup {
-    public Strong(List<InlineMarkup> children) {
+public class InlineCode extends AbstractWrapper implements InlineMarkup {
+    public InlineCode(List<InlineMarkup> children) {
         super(new SimpleParent(children));
     }
 
     @Override
     public void toMarkdown(StringBuilder sb) {
-        super.toMarkdown(sb, "__", "__");
+        super.toMarkdown(sb, "`", "`");
     }
 
     @Override
     public void toHtml(StringBuilder sb) {
-        super.toHtml(sb, "<strong>", "</strong>");
+        super.toHtml(sb, "<code>", "</code>");
     }
 }

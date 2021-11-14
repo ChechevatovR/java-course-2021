@@ -1,6 +1,6 @@
 package markup;
 
-public class Text implements MarkElement {
+public class Text implements InlineMarkup {
     protected final String text;
 
     public Text(String text) {
