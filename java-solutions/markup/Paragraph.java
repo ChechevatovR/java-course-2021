@@ -7,27 +7,9 @@ public class Paragraph extends AbstractWrapper implements HtmlSerializable, Mark
         super(content);
     }
 
-    public static Paragraph fromMdString(String s, int offset) {
-        int level = 0;
-        while (level < 6 && s.length() > level && s.charAt(level) == '#') {
-            level++;
-        }
-
-        if (s.length() == level || !Character.isWhitespace(s.charAt(level))) {
-            level = 0;
-        }
-
-        Paragraph result = new Paragraph(TextWithInlines.fromMdString(
-                s,
-                offset + level + (level > 0 ? 1 : 0),
-                false,
-                false,
-                false,
-                false,
-                null
-        ).first);
-        result.headingLevel = level;
-        return result;
+    public Paragraph(InlineMarkup content, int headingLevel) {
+        super(content);
+        this.headingLevel = headingLevel;
     }
 
     @Override
