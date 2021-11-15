@@ -1,6 +1,8 @@
+import scanner.Scanner;
+
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.nio.charset.StandardCharsets;
 
 class IntList {
     private int[] c;

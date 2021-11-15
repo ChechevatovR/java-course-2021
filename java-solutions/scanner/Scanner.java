@@ -1,39 +1,12 @@
+package scanner;
+
 import java.io.*;
 import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.InputMismatchException;
 import java.util.function.Predicate;
 
-class isNotWhitespace implements Predicate<Character> {
-    @Override
-    public boolean test(Character c) {
-        return !Character.isWhitespace(c);
-    }
-}
-
-class isWordCharacter implements Predicate<Character> {
-    @Override
-    public boolean test(Character c) {
-        return Character.isLetter(c) || Character.getType(c) == Character.DASH_PUNCTUATION || c == '\'';
-    }
-}
-
-class isLineSeparator implements Predicate<Character> {
-    // https://en.wikipedia.org/wiki/Newline#Unicode
-    @Override
-    public boolean test(Character c) {
-        return
-            c == 0x000A || // LF | Line feed
-            c == 0x000B || // VT | Vertical tab
-            c == 0x000C || // FF | Form feed
-            c == 0x000D || // CR | Carriage return
-            c == 0x0085 || // NL | Next line
-            c == 0x2028 || // LS | Line separator
-            c == 0x2029;   // PS | Paragraph separator
-    }
-}
-
-public class Scanner {
+public class Scanner implements AutoCloseable {
     private final int BUFFER_SIZE = 512;
     private final int READ_AHEAD_LIMIT = 1 << 21;
 
@@ -41,20 +14,45 @@ public class Scanner {
     private final CharBuffer buf = CharBuffer.allocate(this.BUFFER_SIZE).limit(0);
     private final CharBuffer bufFrw = CharBuffer.allocate(this.BUFFER_SIZE).limit(0);
 
-    private final Predicate<Character> isNotWhitespace = new isNotWhitespace();
-    private final Predicate<Character> isWordCharacter = new isWordCharacter();
-    private final Predicate<Character> isLineSeparator = new isLineSeparator();
-
     public int linesSkipped = 0;
+
+    private final Predicate<Character> isNotWhitespace = new Predicate<Character>() {
+        @Override
+        public boolean test(Character c) {
+            return !Character.isWhitespace(c);
+        }
+    };
+
+    private final Predicate<Character> isWordCharacter = new Predicate<Character>() {
+        @Override
+        public boolean test(Character c) {
+            return Character.isLetter(c) || Character.getType(c) == Character.DASH_PUNCTUATION || c == '\'';
+        }
+    };
+
+    private final Predicate<Character> isLineSeparator = new Predicate<Character>()  {
+        // https://en.wikipedia.org/wiki/Newline#Unicode
+        @Override
+        public boolean test(Character c) {
+            return
+                    c == 0x000A || // LF | Line feed
+                            c == 0x000B || // VT | Vertical tab
+                            c == 0x000C || // FF | Form feed
+                            c == 0x000D || // CR | Carriage return
+                            c == 0x0085 || // NL | Next line
+                            c == 0x2028 || // LS | Line separator
+                            c == 0x2029;   // PS | Paragraph separator
+        }
+    };
 
     // =================================[ CONSTRUCTORS ]=================================
 
     public Scanner(File file) throws FileNotFoundException {
         this.reader = new BufferedReader(
-            new InputStreamReader(
-                new FileInputStream(file),
-                StandardCharsets.UTF_8
-            )
+                new InputStreamReader(
+                        new FileInputStream(file),
+                        StandardCharsets.UTF_8
+                )
         );
     }
 
@@ -159,7 +157,57 @@ public class Scanner {
                 this.reset();
             }
         }
-        
+
+    }
+
+    public String nextToken(Predicate<Character> isTokenChar) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        boolean found = false;
+        this.linesSkipped = 0;
+        outer: do {
+            while (!isEmpty(this.buf)) {
+                char cur = this.buf.get();
+                if (isTokenChar.test(cur)) {
+                    found = true;
+                    sb.append(cur);
+                } else if (found) {
+                    this.buf.position(this.buf.position() - 1);
+                    break outer;
+                }
+                if (isLineSeparator.test(cur)) {
+                    this.linesSkipped++;
+                    if (cur == '\r') {
+                        if (isEmpty(this.buf)) {
+                            this.read(this.buf);
+                        }
+                        if (!isEmpty(this.buf)) {
+                            if (this.buf.get() != '\n') {
+                                this.buf.position(this.buf.position() - 1);
+                            }
+                        }
+                    }
+                }
+            }
+            this.read(this.buf);
+        } while(!isEmpty(this.buf));
+        return sb.toString();
+    }
+
+    public boolean hasNextToken(Predicate<Character> isTokenChar) throws IOException {
+        this.mark();
+        try {
+            do {
+                while (!isEmpty(this.bufFrw)) {
+                    if (isTokenChar.test(this.bufFrw.get())) {
+                        return true;
+                    }
+                }
+                this.read(this.bufFrw);
+            } while (!isEmpty(this.bufFrw));
+            return false;
+        } finally {
+            this.reset();
+        }
     }
 
     // ==================================[ NUMERICS ]====================================
@@ -239,7 +287,7 @@ public class Scanner {
             return Integer.parseInt(literalToDigital(token));
         } catch (NumberFormatException e) {
             throw new InputMismatchException();
-        } 
+        }
     }
 
     public boolean hasNextNumber() throws IOException {
