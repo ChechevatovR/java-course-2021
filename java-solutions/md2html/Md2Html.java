@@ -1,16 +1,16 @@
 package md2html;
 
-import scanner.Scanner;
 import markup.*;
 import pair.Pair;
+import scanner.Scanner;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.function.Predicate;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+import java.util.function.Predicate;
 
 public class Md2Html {
     private static List<List<String>> splitIntoParagraphs(Scanner in) throws IOException {
@@ -122,7 +122,7 @@ public class Md2Html {
                 offset + level + (level > 0 ? 1 : 0),
                 new SkipSettings(),
                 null,
-                new HashSet<String>()
+                new HashSet<>()
         );
         return new ParagraphOrHeading(result.first, level);
     }
@@ -157,10 +157,7 @@ public class Md2Html {
                 }
 
                 // Tag, followed by a whitespace is considered non-opening
-                if (
-                        s.length() > offset + i + tag.length()
-                        && !Character.isWhitespace(s.charAt(offset + i + tag.length()))
-                ) {
+                if (s.length() > offset + i + tag.length() && !Character.isWhitespace(s.charAt(offset + i + tag.length()))) {
                     Pair<TextWithInlines, Integer> res = new Pair<>(null, 0);
 
                     abortOn.add(closeOn);
@@ -174,7 +171,7 @@ public class Md2Html {
                     } else if (tag.equals("`") && !skip.code) {
                         res = parseInline(s, offset + i + tag.length(), skip.setKey("code"), tag, abortOn);
                     } else if (tag.equals("<<") && !skip.ins) {
-                        res = parseInline(s, offset + i + tag.length(), skip.setKey("ins"),">>", abortOn);
+                        res = parseInline(s, offset + i + tag.length(), skip.setKey("ins"), ">>", abortOn);
                     } else if (tag.equals("}}") && !skip.del) {
                         res = parseInline(s, offset + i + tag.length(), skip.setKey("del"), "{{", abortOn);
                     }
