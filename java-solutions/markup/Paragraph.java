@@ -1,29 +1,19 @@
 package markup;
 
-public class Paragraph extends AbstractWrapper implements HtmlSerializable, MarkdownSerializable {
-    private int headingLevel = 0;
+import java.util.List;
 
-    public Paragraph(InlineMarkup content) {
-        super(content);
-    }
-
-    public Paragraph(InlineMarkup content, int headingLevel) {
-        super(content);
-        this.headingLevel = headingLevel;
+public class Paragraph extends SimpleParent implements MarkdownSerializable, HtmlSerializable {
+    public Paragraph(List<InlineMarkup> children) {
+        super(children);
     }
 
     @Override
     public void toMarkdown(StringBuilder sb) {
-        super.toMarkdown(
-                sb,
-                "#".repeat(this.headingLevel) + (this.headingLevel > 0 ? " " : ""),
-                System.lineSeparator().repeat(2)
-        );
+        super.toMarkdown(sb);
     }
 
     @Override
     public void toHtml(StringBuilder sb) {
-        String tag = this.headingLevel > 0 ? "h" + this.headingLevel : "p";
-        super.toHtml(sb, "<" + tag + ">", "</" + tag + ">" + System.lineSeparator());
+        super.toHtml(sb);
     }
 }

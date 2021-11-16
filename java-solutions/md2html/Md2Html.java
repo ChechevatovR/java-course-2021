@@ -80,15 +80,33 @@ public class Md2Html {
     }
 
     private static String getInlineTag(String s, int offset) {
+        Predicate<Character> isTokenChar = new Predicate<Character>() {
+            @Override
+            public boolean test(Character c) {
+                return
+                        c == '_'
+                                || c == '*'
+                                || c == '-'
+                                || c == '{'
+                                || c == '}'
+                                || c == '<'
+                                || c == '>'
+                                || c == '`';
+            }
+        };
+
         char tag0 = s.charAt(offset);
-        String tag = "" + tag0;
-        if (s.length() > offset + 1 && s.charAt(offset + 1) == tag0 && (tag0 == '_' || tag0 == '*' || tag0 == '-')) {
-            tag += tag0;
+        if (isTokenChar.test(tag0)) {
+            String tag = "" + tag0;
+            if (s.length() > offset + 1 && s.charAt(offset + 1) == tag0 && isTokenChar.test(tag0)) {
+                tag += tag0;
+            }
+            return tag;
         }
-        return tag;
+        return "";
     }
 
-    public static Paragraph parseParagraph(String s, int offset) {
+    public static TrueParagraph parseParagraph(String s, int offset) {
         int level = 0;
         while (level < 6 && s.length() > level && s.charAt(level) == '#') {
             level++;
@@ -105,10 +123,24 @@ public class Md2Html {
                 false,
                 false,
                 false,
+                false,
+                false,
                 null,
                 new HashSet<String>()
         );
-        return new Paragraph(result.first, level);
+        return new TrueParagraph(result.first, level);
+    }
+
+    private static String escape(char c) {
+        if (c == '<') {
+            return "&lt;";
+        } else if (c == '>') {
+            return "&gt;";
+        } else if (c == '&') {
+            return "&amp;";
+        } else {
+            return "" + c;
+        }
     }
 
     public static Pair<TextWithInlines, Integer> parseTextWithInlines(
@@ -118,6 +150,8 @@ public class Md2Html {
             boolean skipStrong,
             boolean skipStrikeout,
             boolean skipCode,
+            boolean skipIns,
+            boolean skipDel,
             String closeOn,
             Collection<String> abortOn
     ) {
@@ -131,15 +165,14 @@ public class Md2Html {
             // If next char is escaped
             if (c == '\\' && s.length() > offset + i + 1) {
                 i++;
-                currentText.append(s.charAt(offset + i++));
+                currentText.append(escape(s.charAt(offset + i++)));
                 prevIsWhitespace = false;
                 continue;
             }
 
             // If character is a prefix of a tag
-            if (c == '*' || c == '_' || c == '-' || c == '`') {
-                String tag = getInlineTag(s, offset + i);
-
+            String tag = getInlineTag(s, offset + i);
+            if (!tag.isEmpty()) {
                 if (abortOn.contains(tag)) {
                     return new Pair<>(null, 0);
                 }
@@ -157,13 +190,29 @@ public class Md2Html {
                     abortOn.add(closeOn);
 
                     if ((tag.equals("_") || tag.equals("*")) && !skipEmphasis) {
-                        childRes = parseTextWithInlines(s, offset + i + tag.length(), true, skipStrong, skipStrikeout, skipCode, tag, abortOn);
+                        childRes = parseTextWithInlines(
+                                s, offset + i + tag.length(), true, skipStrong, skipStrikeout,
+                                skipCode, skipIns, skipDel, tag, abortOn);
                     } else if ((tag.equals("__") || tag.equals("**")) && !skipStrong) {
-                        childRes = parseTextWithInlines(s, offset + i + tag.length(), skipEmphasis, true, skipStrikeout, skipCode, tag, abortOn);
+                        childRes = parseTextWithInlines(
+                                s, offset + i + tag.length(), skipEmphasis, true, skipStrikeout,
+                                skipCode, skipIns, skipDel, tag, abortOn);
                     } else if (tag.equals("--") && !skipStrikeout) {
-                        childRes = parseTextWithInlines(s, offset + i + tag.length(), skipEmphasis, skipStrong, true, skipCode, tag, abortOn);
+                        childRes = parseTextWithInlines(
+                                s, offset + i + tag.length(), skipEmphasis, skipStrong, true,
+                                skipCode, skipIns, skipDel, tag, abortOn);
                     } else if (tag.equals("`") && !skipCode) {
-                        childRes = parseTextWithInlines(s, offset + i + tag.length(), skipEmphasis, skipStrong, skipStrikeout, true, tag, abortOn);
+                        childRes = parseTextWithInlines(
+                                s, offset + i + tag.length(), skipEmphasis, skipStrong, skipStrikeout,
+                                true, skipIns, skipDel, tag, abortOn);
+                    } else if (tag.equals("<<") && !skipIns) {
+                        childRes = parseTextWithInlines(
+                                s, offset + i + tag.length(), skipEmphasis, skipStrong, skipStrikeout,
+                                skipCode, true, skipDel, ">>", abortOn);
+                    } else if (tag.equals("}}") && !skipDel) {
+                        childRes = parseTextWithInlines(
+                                s, offset + i + tag.length(), skipEmphasis, skipStrong, skipStrikeout,
+                                skipCode, skipIns, true, "{{", abortOn);
                     }
 
                     abortOn.remove(closeOn);
@@ -182,6 +231,10 @@ public class Md2Html {
                             children.add(new Strikeout(List.of(childRes.first)));
                         } else if (tag.equals("`") && !skipCode) {
                             children.add(new InlineCode(List.of(childRes.first)));
+                        } else if (tag.equals("<<") && !skipIns) {
+                            children.add(new Insertion(List.of(childRes.first)));
+                        } else if (tag.equals("}}") && !skipDel) {
+                            children.add(new Deletion(List.of(childRes.first)));
                         }
                         continue;
                     }
@@ -189,16 +242,7 @@ public class Md2Html {
             }
 
             // If character must be escaped in HTML
-            if (c == '<') {
-                currentText.append("&lt;");
-            } else if (c == '>') {
-                currentText.append("&gt;");
-            } else if (c == '&') {
-                currentText.append("&amp;");
-            } else {
-                currentText.append(c);
-            }
-
+            currentText.append(escape(c));
             prevIsWhitespace = Character.isWhitespace(c);
             i++;
         }
@@ -222,19 +266,19 @@ public class Md2Html {
             printErrorMessage("IO Exception happened while reading data.", e);
         }
 
-        ArrayList<Paragraph> paragraphs = new ArrayList<>();
+        ArrayList<TrueParagraph> paragraphs = new ArrayList<>();
         for (List<String> paragraph : paragraphsAsStrings) {
             paragraphs.add(parseParagraph(mergeLines(paragraph), 0));
         }
         SimpleParent document = new SimpleParent(paragraphs);
 
         try (
-            BufferedWriter out = new BufferedWriter(
-                new OutputStreamWriter(
-                    new FileOutputStream(args[1]),
-                    StandardCharsets.UTF_8
+                BufferedWriter out = new BufferedWriter(
+                        new OutputStreamWriter(
+                                new FileOutputStream(args[1]),
+                                StandardCharsets.UTF_8
+                        )
                 )
-            )
         ) {
             StringBuilder sb = new StringBuilder();
             document.toHtml(sb);
