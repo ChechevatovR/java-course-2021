@@ -13,10 +13,6 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class Md2Html {
-    private static void printErrorMessage(String message, Exception e) {
-        System.err.println(message + e.getMessage());
-    }
-
     private static List<List<String>> splitIntoParagraphs(Scanner in) throws IOException {
         Predicate<String> isBlankString = new Predicate<>() {
             @Override
@@ -72,6 +68,18 @@ public class Md2Html {
         return String.join(System.lineSeparator(), lines);
     }
 
+    private static String escape(char c) {
+        if (c == '<') {
+            return "&lt;";
+        } else if (c == '>') {
+            return "&gt;";
+        } else if (c == '&') {
+            return "&amp;";
+        } else {
+            return "" + c;
+        }
+    }
+
     private static String getInlineTag(String s, int offset) {
         Predicate<Character> isTokenChar = new Predicate<Character>() {
             @Override
@@ -99,7 +107,7 @@ public class Md2Html {
         return "";
     }
 
-    public static TrueParagraph parseParagraph(String s, int offset) {
+    public static ParagraphOrHeading parseParagraph(String s, int offset) {
         int level = 0;
         while (level < 6 && s.length() > level && s.charAt(level) == '#') {
             level++;
@@ -116,28 +124,11 @@ public class Md2Html {
                 null,
                 new HashSet<String>()
         );
-        return new TrueParagraph(result.first, level);
+        return new ParagraphOrHeading(result.first, level);
     }
 
-    private static String escape(char c) {
-        if (c == '<') {
-            return "&lt;";
-        } else if (c == '>') {
-            return "&gt;";
-        } else if (c == '&') {
-            return "&amp;";
-        } else {
-            return "" + c;
-        }
-    }
-
-    public static Pair<TextWithInlines, Integer> parseInline(
-            String s,
-            int offset,
-            SkipSettings skip,
-            String closeOn,
-            Collection<String> abortOn
-    ) {
+    public static Pair<TextWithInlines, Integer> parseInline(String s, int offset, SkipSettings skip, String closeOn,
+                                                             Collection<String> abortOn) {
         List<InlineMarkup> children = new ArrayList<>();
         StringBuilder currentText = new StringBuilder();
         int i = 0;
@@ -146,8 +137,7 @@ public class Md2Html {
             char c = s.charAt(offset + i);
 
             // If next char is escaped
-            if (c == '\\' && s.length() > offset + i + 1) {
-                i++;
+            if (c == '\\' && s.length() > offset + ++i) {
                 currentText.append(escape(s.charAt(offset + i++)));
                 prevIsWhitespace = false;
                 continue;
@@ -169,7 +159,7 @@ public class Md2Html {
                 // Tag, followed by a whitespace is considered non-opening
                 if (
                         s.length() > offset + i + tag.length()
-                                && !Character.isWhitespace(s.charAt(offset + i + tag.length()))
+                        && !Character.isWhitespace(s.charAt(offset + i + tag.length()))
                 ) {
                     Pair<TextWithInlines, Integer> res = new Pair<>(null, 0);
 
@@ -240,7 +230,7 @@ public class Md2Html {
             System.err.println("IO Exception happened while reading data: " + e);
         }
 
-        ArrayList<TrueParagraph> paragraphs = new ArrayList<>();
+        ArrayList<ParagraphOrHeading> paragraphs = new ArrayList<>();
         for (List<String> paragraph : paragraphsAsStrings) {
             paragraphs.add(parseParagraph(mergeLines(paragraph), 0));
         }

@@ -1,13 +1,9 @@
 package markup;
 
-public class TrueParagraph extends AbstractWrapper implements HtmlSerializable, MarkdownSerializable {
-    private int headingLevel = 0;
+public class ParagraphOrHeading extends AbstractWrapper implements HtmlSerializable, MarkdownSerializable {
+    private final int headingLevel;
 
-    public TrueParagraph(InlineMarkup content) {
-        super(content);
-    }
-
-    public TrueParagraph(InlineMarkup content, int headingLevel) {
+    public ParagraphOrHeading(InlineMarkup content, int headingLevel) {
         super(content);
         this.headingLevel = headingLevel;
     }
