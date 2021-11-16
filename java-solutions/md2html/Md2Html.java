@@ -18,18 +18,11 @@ public class Md2Html {
     }
 
     private static List<List<String>> splitIntoParagraphs(Scanner in) throws IOException {
-        Predicate<Character> isWhitespace = new Predicate<>() {
-            @Override
-            public boolean test(Character c) {
-                return Character.isWhitespace(c);
-            }
-        };
-
         Predicate<String> isBlankString = new Predicate<>() {
             @Override
             public boolean test(String s) {
                 for (char c : s.toCharArray()) {
-                    if (!isWhitespace.test(c)) {
+                    if (!Character.isWhitespace(c)) {
                         return false;
                     }
                 }
@@ -116,15 +109,10 @@ public class Md2Html {
             level = 0;
         }
 
-        Pair<TextWithInlines, Integer> result = parseTextWithInlines(
+        Pair<TextWithInlines, Integer> result = parseInline(
                 s,
                 offset + level + (level > 0 ? 1 : 0),
-                false,
-                false,
-                false,
-                false,
-                false,
-                false,
+                new SkipSettings(),
                 null,
                 new HashSet<String>()
         );
@@ -143,15 +131,10 @@ public class Md2Html {
         }
     }
 
-    public static Pair<TextWithInlines, Integer> parseTextWithInlines(
+    public static Pair<TextWithInlines, Integer> parseInline(
             String s,
             int offset,
-            boolean skipEmphasis,
-            boolean skipStrong,
-            boolean skipStrikeout,
-            boolean skipCode,
-            boolean skipIns,
-            boolean skipDel,
+            SkipSettings skip,
             String closeOn,
             Collection<String> abortOn
     ) {
@@ -184,57 +167,48 @@ public class Md2Html {
                 }
 
                 // Tag, followed by a whitespace is considered non-opening
-                if (s.length() > offset + i + tag.length() && !Character.isWhitespace(s.charAt(offset + i + tag.length()))) {
-                    Pair<TextWithInlines, Integer> childRes = new Pair<>(null, 0);
+                if (
+                        s.length() > offset + i + tag.length()
+                                && !Character.isWhitespace(s.charAt(offset + i + tag.length()))
+                ) {
+                    Pair<TextWithInlines, Integer> res = new Pair<>(null, 0);
 
                     abortOn.add(closeOn);
 
-                    if ((tag.equals("_") || tag.equals("*")) && !skipEmphasis) {
-                        childRes = parseTextWithInlines(
-                                s, offset + i + tag.length(), true, skipStrong, skipStrikeout,
-                                skipCode, skipIns, skipDel, tag, abortOn);
-                    } else if ((tag.equals("__") || tag.equals("**")) && !skipStrong) {
-                        childRes = parseTextWithInlines(
-                                s, offset + i + tag.length(), skipEmphasis, true, skipStrikeout,
-                                skipCode, skipIns, skipDel, tag, abortOn);
-                    } else if (tag.equals("--") && !skipStrikeout) {
-                        childRes = parseTextWithInlines(
-                                s, offset + i + tag.length(), skipEmphasis, skipStrong, true,
-                                skipCode, skipIns, skipDel, tag, abortOn);
-                    } else if (tag.equals("`") && !skipCode) {
-                        childRes = parseTextWithInlines(
-                                s, offset + i + tag.length(), skipEmphasis, skipStrong, skipStrikeout,
-                                true, skipIns, skipDel, tag, abortOn);
-                    } else if (tag.equals("<<") && !skipIns) {
-                        childRes = parseTextWithInlines(
-                                s, offset + i + tag.length(), skipEmphasis, skipStrong, skipStrikeout,
-                                skipCode, true, skipDel, ">>", abortOn);
-                    } else if (tag.equals("}}") && !skipDel) {
-                        childRes = parseTextWithInlines(
-                                s, offset + i + tag.length(), skipEmphasis, skipStrong, skipStrikeout,
-                                skipCode, skipIns, true, "{{", abortOn);
+                    if ((tag.equals("_") || tag.equals("*")) && !skip.emphasis) {
+                        res = parseInline(s, offset + i + tag.length(), skip.setKey("emphasis"), tag, abortOn);
+                    } else if ((tag.equals("__") || tag.equals("**")) && !skip.strong) {
+                        res = parseInline(s, offset + i + tag.length(), skip.setKey("strong"), tag, abortOn);
+                    } else if (tag.equals("--") && !skip.strikeout) {
+                        res = parseInline(s, offset + i + tag.length(), skip.setKey("strikeout"), tag, abortOn);
+                    } else if (tag.equals("`") && !skip.code) {
+                        res = parseInline(s, offset + i + tag.length(), skip.setKey("code"), tag, abortOn);
+                    } else if (tag.equals("<<") && !skip.ins) {
+                        res = parseInline(s, offset + i + tag.length(), skip.setKey("ins"),">>", abortOn);
+                    } else if (tag.equals("}}") && !skip.del) {
+                        res = parseInline(s, offset + i + tag.length(), skip.setKey("del"), "{{", abortOn);
                     }
 
                     abortOn.remove(closeOn);
 
-                    if (childRes.first != null) {
-                        i += childRes.second + tag.length();
+                    if (res.first != null) {
+                        i += res.second + tag.length();
                         children.add(new Text(currentText.toString()));
                         currentText = new StringBuilder();
                         prevIsWhitespace = false;
 
                         if (tag.equals("_") || tag.equals("*")) {
-                            children.add(new Emphasis(List.of(childRes.first)));
+                            children.add(new Emphasis(List.of(res.first)));
                         } else if (tag.equals("__") || tag.equals("**")) {
-                            children.add(new Strong(List.of(childRes.first)));
-                        } else if (tag.equals("--") && !skipStrikeout) {
-                            children.add(new Strikeout(List.of(childRes.first)));
-                        } else if (tag.equals("`") && !skipCode) {
-                            children.add(new InlineCode(List.of(childRes.first)));
-                        } else if (tag.equals("<<") && !skipIns) {
-                            children.add(new Insertion(List.of(childRes.first)));
-                        } else if (tag.equals("}}") && !skipDel) {
-                            children.add(new Deletion(List.of(childRes.first)));
+                            children.add(new Strong(List.of(res.first)));
+                        } else if (tag.equals("--")) {
+                            children.add(new Strikeout(List.of(res.first)));
+                        } else if (tag.equals("`")) {
+                            children.add(new InlineCode(List.of(res.first)));
+                        } else if (tag.equals("<<")) {
+                            children.add(new Insertion(List.of(res.first)));
+                        } else if (tag.equals("}}")) {
+                            children.add(new Deletion(List.of(res.first)));
                         }
                         continue;
                     }
@@ -261,9 +235,9 @@ public class Md2Html {
         try (Scanner in = new Scanner(new File(args[0]))) {
             paragraphsAsStrings = splitIntoParagraphs(in);
         } catch (FileNotFoundException e) {
-            printErrorMessage("Input file not found.", e);
+            System.err.println("Input file not found: " + e);
         } catch (IOException e) {
-            printErrorMessage("IO Exception happened while reading data.", e);
+            System.err.println("IO Exception happened while reading data: " + e);
         }
 
         ArrayList<TrueParagraph> paragraphs = new ArrayList<>();
@@ -284,10 +258,9 @@ public class Md2Html {
             document.toHtml(sb);
             out.write(sb.toString());
         } catch (FileNotFoundException e) {
-            printErrorMessage("Output file not found. It must not happen cause program must create one, but" +
-                    "that did not happen for some reason", e);
+            System.err.println("Output file not found: " + e);
         } catch (IOException e) {
-            printErrorMessage("IO Exception happened while writing data.", e);
+            System.err.println("IO Exception happened while writing data: " + e);
         }
     }
 }
