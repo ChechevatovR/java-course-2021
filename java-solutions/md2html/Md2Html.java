@@ -1,7 +1,7 @@
 package md2html;
 
 import markup.*;
-import pair.Pair;
+import util.Pair;
 import scanner.Scanner;
 
 import java.io.*;

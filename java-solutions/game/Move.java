@@ -1,30 +1,30 @@
 package game;
 
 public class Move {
-    private final int row;
-    private final int col;
-    private final Cell value;
+    private final int y;
+    private final int x;
+    private final Cell val;
 
-    public Move(int row, int col, Cell value) {
-        this.row = row;
-        this.col = col;
-        this.value = value;
+    public Move(int x, int y, Cell val) {
+        this.x = x;
+        this.y = y;
+        this.val = val;
     }
 
-    public int getRow() {
-        return row;
+    public int getY() {
+        return y;
     }
 
-    public int getCol() {
-        return col;
+    public int getX() {
+        return x;
     }
 
-    public Cell getValue() {
-        return value;
+    public Cell getVal() {
+        return val;
     }
 
     @Override
     public String toString() {
-        return String.format("Move(%s, %d, %d)", value, row + 1, col + 1);
+        return String.format("Move(%s, %d, %d)", val, y + 1, x + 1);
     }
 }
