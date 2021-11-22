@@ -48,13 +48,13 @@ public class MNKBoard implements Board {
 
     @Override
     public Position getPosition() {
-        return new MNKPosition(this.field, this.k, this.playersAmount, this.curPlayerCell, this.turnsDone);
+        return new MNKPosition(this.field, this.k, this.curPlayerCell, this.turnsDone);
     }
 
     @Override
     public MoveResult applyMove(Move move) {
         if (!isValid(move)) {
-            return MoveResult.LOSS;
+            return MoveResult.INVALID;
         }
         field[move.getY()][move.getX()] = move.getVal();
         this.curPlayerCell = this.curPlayerCell == Cell.X ? Cell.O : Cell.X;
@@ -75,17 +75,13 @@ public class MNKBoard implements Board {
     }
 
     private MoveResult checkBoard(Move lastMove) {
-        final List<Integer> coll = List.of(
-                1 + this.checkLine(new Vector2<>(lastMove.getX(), lastMove.getY()), v -> v.x++)
-                        + this.checkLine(new Vector2<>(lastMove.getX(), lastMove.getY()), v -> v.x--),
-                1 + this.checkLine(new Vector2<>(lastMove.getX(), lastMove.getY()), v -> v.y++)
-                        + this.checkLine(new Vector2<>(lastMove.getX(), lastMove.getY()), v -> v.y--),
-                1 + this.checkLine(new Vector2<>(lastMove.getX(), lastMove.getY()), v -> {v.x++; v.y++;})
-                        + this.checkLine(new Vector2<>(lastMove.getX(), lastMove.getY()), v -> {v.x--; v.y--;}),
-                1 + this.checkLine(new Vector2<>(lastMove.getX(), lastMove.getY()), v -> {v.x++; v.y--; })
-                        + this.checkLine(new Vector2<>(lastMove.getX(), lastMove.getY()), v -> {v.x--; v.y++;})
-        );
-        int res = Collections.max(coll);
+        Vector2<Integer> pos = new Vector2<>(lastMove.getX(), lastMove.getY());
+        int res = Collections.max(List.of(
+                1 + this.checkLine(pos.copy(), v -> v.x++) + this.checkLine(pos.copy(), v -> v.x--),
+                1 + this.checkLine(pos.copy(), v -> v.y++) + this.checkLine(pos.copy(), v -> v.y--),
+                1 + this.checkLine(pos.copy(), v -> {v.x++; v.y++;}) + this.checkLine(pos.copy(), v -> {v.x--; v.y--;}),
+                1 + this.checkLine(pos.copy(), v -> {v.x++; v.y--;}) + this.checkLine(pos.copy(), v -> {v.x--; v.y++;})
+        ));
         if (res >= this.k) {
             return MoveResult.WIN;
         } else if (this.turnsDone == m * n) {
@@ -104,7 +100,7 @@ public class MNKBoard implements Board {
 
     @Override
     public void log(OutputStreamWriter logger) throws IOException {
-        logger.append(this.getPosition().toString());
+        logger.append(this.getPosition().toHumanReadableString());
         logger.append(System.lineSeparator());
         logger.append(String.valueOf(this.turnsDone)).append(" turns done").append(System.lineSeparator());
     }

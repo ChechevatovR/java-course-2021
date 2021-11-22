@@ -1,8 +1,8 @@
 package game;
 
 public class Move {
-    private final int y;
     private final int x;
+    private final int y;
     private final Cell val;
 
     public Move(int x, int y, Cell val) {
@@ -11,12 +11,12 @@ public class Move {
         this.val = val;
     }
 
-    public int getY() {
-        return y;
-    }
-
     public int getX() {
         return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public Cell getVal() {
@@ -25,6 +25,6 @@ public class Move {
 
     @Override
     public String toString() {
-        return String.format("Move(%s, %d, %d)", val, y + 1, x + 1);
+        return String.format("Move(%d, %d, %s)", x + 1, y+ 1, val);
     }
 }

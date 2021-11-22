@@ -8,4 +8,8 @@ public class Vector2<T> {
         this.x = x;
         this.y = y;
     }
+
+    public Vector2<T> copy() {
+        return new Vector2<T>(x, y);
+    }
 }

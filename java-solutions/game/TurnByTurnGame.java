@@ -46,8 +46,7 @@ public class TurnByTurnGame {
             logger.append(" which resulted in ").append(result.name()).append(System.lineSeparator());
             logger.append("Board after the turn: ").append(System.lineSeparator());
             this.board.log(logger);
-            logger.append("===================================================");
-            logger.append(System.lineSeparator());
+            logger.append("===================================================").append(System.lineSeparator());
         } catch (IOException e) {
             System.err.println("No logs for this turn due to IOException " + e.getMessage());
         }

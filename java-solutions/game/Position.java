@@ -1,8 +1,5 @@
 package game;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-
 public interface Position {
     Cell getCurPlayerCell();
 
@@ -12,5 +9,5 @@ public interface Position {
 
     boolean isValid(Move move);
 
-    String toString();
+    String toHumanReadableString();
 }

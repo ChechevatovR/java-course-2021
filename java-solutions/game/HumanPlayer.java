@@ -24,7 +24,7 @@ public class HumanPlayer implements Player {
     @Override
     public Move makeMove(Position position) {
         System.out.println("Current position is: ");
-        System.out.println(position);
+        System.out.println(position.toHumanReadableString());
         System.out.println("It is now your turn with " + position.getCurPlayerCell() + ": ");
         return this.getMove(position);
     }

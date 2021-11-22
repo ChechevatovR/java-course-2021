@@ -11,14 +11,14 @@ public class Main {
     public static void main(String[] args) {
         try (
                 FileOutputStream fileOutputStream = new FileOutputStream("log.txt");
-                OutputStreamWriter logger = new OutputStreamWriter(fileOutputStream)
+                OutputStreamWriter logger = new OutputStreamWriter(fileOutputStream);
         ) {
             int m = 5;
             int n = 5;
             int k = 4;
             final int result = new TurnByTurnGame(
                     new MNKBoard(m, n, k, 2),
-                    new RandomPlayer(m, n),
+                    new HumanPlayer(new Scanner(System.in), 1),
                     new RandomPlayer(m, n)
             ).play(logger);
             System.out.println("The game has ended, and the result is:");
