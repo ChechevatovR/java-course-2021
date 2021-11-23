@@ -40,13 +40,15 @@ public class HumanPlayer implements Player {
         System.out.println("Your opponent suggested a draw. Do you agree (Y/N)? ");
         boolean proceed = false;
         do {
-            char c;
+            char c = 0;
             try {
                 proceed = in.hasSomething();
                 if (!proceed) {
                     break;
                 }
-                c = in.nextToken(ch -> Character.isLetter(ch)).charAt(0);
+                if (in.hasNextToken(ch -> Character.isLetter(ch))) {
+                    c = in.nextToken(ch -> Character.isLetter(ch)).charAt(0);
+                }
                 proceed = in.hasSomething();
             } catch (IOException e) {
                 System.out.println("There are IOException problems between you and me, ");
