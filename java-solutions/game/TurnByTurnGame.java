@@ -33,7 +33,7 @@ public class TurnByTurnGame {
             switch (result) {
                 case DRAW_REQUEST:
                     if (drawIsNotAllowed) {
-                        return -curPlayerIndex - 1;
+                        return -(curPlayerIndex + 1);
                     }
                     drawIsNotAllowed = true;
                     if (players[1 - curPlayerIndex].askForDraw(board.getPosition())) {
@@ -46,7 +46,7 @@ public class TurnByTurnGame {
                     return 0;
                 case LOSS:
                 case INVALID:
-                    return -curPlayerIndex - 1;
+                    return -(curPlayerIndex + 1);
             }
         }
     }
