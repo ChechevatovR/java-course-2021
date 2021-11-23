@@ -25,4 +25,9 @@ public class RandomPlayer implements Player {
             }
         }
     }
+
+    @Override
+    public boolean askForDraw(Position position) {
+        return random.nextBoolean();
+    }
 }

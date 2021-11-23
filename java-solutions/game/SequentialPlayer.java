@@ -3,6 +3,7 @@ package game;
 public class SequentialPlayer implements Player {
     private final int yBound;
     private final int xBound;
+    private boolean drawAgreement = false;
 
     public SequentialPlayer(int yBound, int xBound) {
         this.yBound = yBound;
@@ -20,5 +21,12 @@ public class SequentialPlayer implements Player {
             }
         }
         throw new AssertionError("No valid moves");
+    }
+
+    @Override
+    public boolean askForDraw(Position position) {
+        boolean res = drawAgreement;
+        drawAgreement = !drawAgreement;
+        return res;
     }
 }

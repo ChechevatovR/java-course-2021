@@ -27,4 +27,9 @@ public class CheatingPlayer implements Player {
         }
         return first;
     }
+
+    @Override
+    public boolean askForDraw(Position position) {
+        return false;
+    }
 }

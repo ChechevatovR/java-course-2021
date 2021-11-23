@@ -1,6 +1,6 @@
 package game;
 
-import util.Vector2;
+import util.MutableVector2;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -10,20 +10,19 @@ import java.util.List;
 
 public class MNKBoard implements Board {
     private interface NextCellProvider {
-        void next(Vector2<Integer> v);
+        void next(MutableVector2<Integer> v);
     }
 
     private final Cell[][] field;
     private final int m;
     private final int n;
     private final int k;
-    private final int playersAmount;
 
     private int curPlayerIndex = 0;
     private Cell curPlayerCell = Cell.X;
     private int turnsDone = 0;
 
-    public MNKBoard(int m, int n, int k, int playersAmount) {
+    public MNKBoard(int m, int n, int k) {
         // m is for width
         // n is for height
         field = new Cell[n][m];
@@ -33,7 +32,6 @@ public class MNKBoard implements Board {
         this.m = m;
         this.n = n;
         this.k = k;
-        this.playersAmount = playersAmount;
     }
 
     @Override
@@ -53,17 +51,20 @@ public class MNKBoard implements Board {
 
     @Override
     public MoveResult applyMove(Move move) {
+        if (move.isDrawRequest()) {
+            return MoveResult.DRAW_REQUEST;
+        }
         if (!isValid(move)) {
             return MoveResult.INVALID;
         }
         field[move.getY()][move.getX()] = move.getVal();
         this.curPlayerCell = this.curPlayerCell == Cell.X ? Cell.O : Cell.X;
-        this.curPlayerIndex = (this.curPlayerIndex + 1) % this.playersAmount;
+        this.curPlayerIndex = 1 - curPlayerIndex;
         this.turnsDone++;
         return this.checkBoard(move);
     }
 
-    private int checkLine(Vector2<Integer> v, NextCellProvider next) {
+    private int checkLine(MutableVector2<Integer> v, NextCellProvider next) {
         Cell req = this.field[v.y][v.x];
         next.next(v);
         int res = 0;
@@ -75,11 +76,11 @@ public class MNKBoard implements Board {
     }
 
     private MoveResult checkBoard(Move lastMove) {
-        Vector2<Integer> pos = new Vector2<>(lastMove.getX(), lastMove.getY());
+        MutableVector2<Integer> pos = new MutableVector2<>(lastMove.getX(), lastMove.getY());
         int res = Collections.max(List.of(
                 1 + this.checkLine(pos.copy(), v -> v.x++) + this.checkLine(pos.copy(), v -> v.x--),
                 1 + this.checkLine(pos.copy(), v -> v.y++) + this.checkLine(pos.copy(), v -> v.y--),
-                1 + this.checkLine(pos.copy(), v -> {v.x++; v.y++;}) + this.checkLine(pos.copy(), v -> {v.x--; v.y--;}),
+//                1 + this.checkLine(pos.copy(), v -> {v.x++; v.y++;}) + this.checkLine(pos.copy(), v -> {v.x--; v.y--;}),
                 1 + this.checkLine(pos.copy(), v -> {v.x++; v.y--;}) + this.checkLine(pos.copy(), v -> {v.x--; v.y++;})
         ));
         if (res >= this.k) {

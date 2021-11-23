@@ -4,11 +4,17 @@ public class Move {
     private final int x;
     private final int y;
     private final Cell val;
+    private final boolean isDrawRequest;
 
-    public Move(int x, int y, Cell val) {
+    public Move(int x, int y, Cell val, boolean isDrawRequest) {
         this.x = x;
         this.y = y;
         this.val = val;
+        this.isDrawRequest = isDrawRequest;
+    }
+
+    public Move(int x, int y, Cell val) {
+        this(x, y, val, false);
     }
 
     public int getX() {
@@ -21,6 +27,10 @@ public class Move {
 
     public Cell getVal() {
         return val;
+    }
+
+    public boolean isDrawRequest() {
+        return isDrawRequest;
     }
 
     @Override

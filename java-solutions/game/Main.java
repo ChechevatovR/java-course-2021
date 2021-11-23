@@ -17,15 +17,15 @@ public class Main {
             int n = 5;
             int k = 4;
             final int result = new TurnByTurnGame(
-                    new MNKBoard(m, n, k, 2),
+                    new MNKBoard(m, n, k),
                     new HumanPlayer(new Scanner(System.in), 1),
-                    new RandomPlayer(m, n)
+                    new HumanPlayer(new Scanner(System.in), 2)
             ).play(logger);
             System.out.println("The game has ended, and the result is:");
             if (result > 0) {
                 System.out.println("Player №" + result + " won");
             } else if (result < 0) {
-                System.out.println("Player №" + result + " lost. Everyone else won");
+                System.out.println("Player №" + -result + " lost. Everyone else won");
             } else {
                 System.out.println("Draw");
             }

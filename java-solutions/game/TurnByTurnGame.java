@@ -13,6 +13,7 @@ public class TurnByTurnGame {
     }
 
     public int play(OutputStreamWriter logWriter) {
+        boolean drawIsNotAllowed = false;
         while (true) {
             int curPlayerIndex = board.getCurPlayerIndex();
             MoveResult result;
@@ -26,15 +27,26 @@ public class TurnByTurnGame {
             if (logWriter != null) {
                 this.log(logWriter, curPlayerIndex, move, result);
             }
-            curPlayerIndex++;
+            if (result != MoveResult.DRAW_REQUEST) {
+                drawIsNotAllowed = false;
+            }
             switch (result) {
+                case DRAW_REQUEST:
+                    if (drawIsNotAllowed) {
+                        return -curPlayerIndex - 1;
+                    }
+                    drawIsNotAllowed = true;
+                    if (players[1 - curPlayerIndex].askForDraw(board.getPosition())) {
+                        return 0;
+                    }
+                    break;
                 case WIN:
-                    return curPlayerIndex;
+                    return curPlayerIndex + 1;
                 case DRAW:
                     return 0;
                 case LOSS:
                 case INVALID:
-                    return -curPlayerIndex;
+                    return -curPlayerIndex - 1;
             }
         }
     }

@@ -56,15 +56,18 @@ public class MNKPosition implements Position {
 
     @Override
     public String toHumanReadableString() {
-        StringBuilder sb = new StringBuilder(padder.pad("")).append(" ");
+//        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(padder.pad(""));
         for (int i = 1; i <= this.m; i++) {
             sb.append(padder.pad(i)).append(" ");
         }
         sb.append(System.lineSeparator());
         for (int y = 0; y < this.n; y++) {
+            sb.append(" ".repeat(y));
             sb.append(padder.pad(y + 1)).append(" ");
             for (int x = 0; x < this.m; x++) {
                 sb.append(padder.pad(CELL_TO_STRING.get(this.field[y][x]))).append(' ');
+//                sb.append(CELL_TO_STRING.get(this.field[y][x])).append(' ');
             }
             sb.append(System.lineSeparator());
         }
