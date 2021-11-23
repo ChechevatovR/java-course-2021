@@ -13,9 +13,9 @@ public class Main {
                 FileOutputStream fileOutputStream = new FileOutputStream("log.txt");
                 OutputStreamWriter logger = new OutputStreamWriter(fileOutputStream);
         ) {
-            int m = 5;
-            int n = 5;
-            int k = 4;
+            int m = 10;
+            int n = 10;
+            int k = 6;
             final int result = new TurnByTurnGame(
                     new MNKBoard(m, n, k),
                     new HumanPlayer(new Scanner(System.in), 1),

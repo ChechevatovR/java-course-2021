@@ -2,12 +2,14 @@ package game;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Objects;
 
 public class TurnByTurnGame {
     private final Board board;
     private final Player[] players;
 
     public TurnByTurnGame(Board board, Player... players) {
+        Objects.requireNonNull(board);
         this.board = board;
         this.players = players;
     }

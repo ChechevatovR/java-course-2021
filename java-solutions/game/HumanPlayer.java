@@ -38,10 +38,16 @@ public class HumanPlayer implements Player {
         System.out.println("Current position is: ");
         System.out.println(position.toHumanReadableString());
         System.out.println("Your opponent suggested a draw. Do you agree (Y/N)? ");
-        while (true) {
+        boolean proceed = false;
+        do {
             char c;
             try {
+                proceed = in.hasSomething();
+                if (!proceed) {
+                    break;
+                }
                 c = in.nextToken(ch -> Character.isLetter(ch)).charAt(0);
+                proceed = in.hasSomething();
             } catch (IOException e) {
                 System.out.println("There are IOException problems between you and me, ");
                 System.out.println("so I was not able to read your input. ");
@@ -58,13 +64,19 @@ public class HumanPlayer implements Player {
                     System.out.println("The response you entered is invalid.");
                     System.out.println("Please enter something valid (\"Y\"/\"N\"): ");
             }
-        }
+        } while (proceed);
+        return true;
     }
 
     private Move getMove(Position position) {
         Move move = null;
+        boolean proceed = false;
         do {
             try {
+                proceed = in.hasSomething();
+                if (!proceed) {
+                    break;
+                }
                 if (in.hasNextInt()) {
                     int y = in.nextInt() - 1;
                     int x = in.nextInt() - 1;
@@ -73,7 +85,7 @@ public class HumanPlayer implements Player {
                     String command = in.nextWord();
                     if (command.equals("surrender")) {
                         // Returning an invalid turn, which will result in loss
-                        return new Move(-1, -1, Cell.E, false);
+                        return new Move(-1, -1, Cell.E);
                     } else if (command.equals("draw")) {
                         return new Move(-1, -1, Cell.E, true);
                     }
@@ -92,6 +104,7 @@ public class HumanPlayer implements Player {
             }
             System.out.println("The move you entered is invalid.");
             System.out.println("Please enter something valid: ");
-        } while (true);
+        } while (proceed);
+        return new Move(-1, -1, Cell.E);
     }
 }

@@ -106,6 +106,10 @@ public class Scanner implements AutoCloseable {
         return buf.position() == buf.limit();
     }
 
+    public boolean hasSomething() throws IOException {
+        return this.hasNextToken(c -> true);
+    }
+
     // ===============================[ TOKEN SPLITTING ]================================
 
     private String nextToken(CharBuffer buf, Predicate<Character> isTokenChar, boolean mustMark) throws IOException {

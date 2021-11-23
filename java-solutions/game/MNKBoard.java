@@ -25,6 +25,9 @@ public class MNKBoard implements Board {
     public MNKBoard(int m, int n, int k) {
         // m is for width
         // n is for height
+        if (n <= 0 || m <= 0 || k <= 0) {
+            throw new IllegalArgumentException("All MNKBoard constructor arguments must be positive integers");
+        }
         field = new Cell[n][m];
         for (Cell[] row : field) {
             Arrays.fill(row, Cell.E);
