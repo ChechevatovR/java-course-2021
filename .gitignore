@@ -3,4 +3,6 @@
 *.ignore
 *.bat
 *Test.java
+*Tester.java
 /java-solutions/base/
+/java-solutions/expression/common/
