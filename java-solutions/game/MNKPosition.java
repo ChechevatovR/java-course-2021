@@ -11,7 +11,7 @@ public class MNKPosition implements Position {
             Cell.O, "O"
     );
 
-    private final StringPadder padder;
+    private final int mPadWidth;
 
     private final Cell[][] field;
     private final int m;
@@ -23,12 +23,27 @@ public class MNKPosition implements Position {
 
     public MNKPosition(Cell[][] field, int k, Cell curPlayerCell, int turnsDone) {
         this.field = field.clone();
-        this.m = field.length;
-        this.n = field[0].length;
+        this.m = field[0].length;
+        this.n = field.length;
         this.k = k;
         this.curPlayerCell = curPlayerCell;
         this.turnsDone = turnsDone;
-        this.padder = new StringPadder(" ", (int) Math.floor(Math.log10(Math.max(this.m, this.n))) + 1);
+        this.mPadWidth = (int) (Math.log10(this.m) + 1);
+    }
+
+    @Override
+    public int getM() {
+        return m;
+    }
+
+    @Override
+    public int getN() {
+        return n;
+    }
+
+    @Override
+    public int getK() {
+        return k;
     }
 
     @Override
@@ -38,6 +53,8 @@ public class MNKPosition implements Position {
 
     @Override
     public Cell getCell(int x, int y) {
+        // Throws ArrayIndexOutOfBounds on illegal x, y
+        // Understandable and must be expected
         return this.field[y][x];
     }
 
@@ -56,18 +73,17 @@ public class MNKPosition implements Position {
 
     @Override
     public String toHumanReadableString() {
-//        StringBuilder sb = new StringBuilder();
-        StringBuilder sb = new StringBuilder(padder.pad(""));
+        StringBuilder sb = new StringBuilder(" ");
         for (int i = 1; i <= this.m; i++) {
-            sb.append(padder.pad(i)).append(" ");
+            sb.append(StringPadder.pad(Integer.toString(i), " ", mPadWidth)).append(" ");
         }
         sb.append(System.lineSeparator());
         for (int y = 0; y < this.n; y++) {
-            sb.append(" ".repeat(y));
-            sb.append(padder.pad(y + 1)).append(" ");
+            String yS = Integer.toString(y + 1);
+            sb.append(" ".repeat(y - yS.length() + 1));
+            sb.append(yS).append(" ");
             for (int x = 0; x < this.m; x++) {
-                sb.append(padder.pad(CELL_TO_STRING.get(this.field[y][x]))).append(' ');
-//                sb.append(CELL_TO_STRING.get(this.field[y][x])).append(' ');
+                sb.append(StringPadder.pad(CELL_TO_STRING.get(this.field[y][x]), " ", mPadWidth)).append(" ");
             }
             sb.append(System.lineSeparator());
         }

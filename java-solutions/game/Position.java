@@ -10,4 +10,10 @@ public interface Position {
     boolean isValid(Move move);
 
     String toHumanReadableString();
+
+    int getM();
+
+    int getN();
+
+    int getK();
 }

@@ -6,6 +6,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.InputMismatchException;
 import java.util.function.Predicate;
 
+import util.IsLineSeparator;
+import util.IsNotWhitespace;
+import util.IsWordCharacter;
+
 public class Scanner implements AutoCloseable {
     private final int BUFFER_SIZE = 512;
     private final int READ_AHEAD_LIMIT = 1 << 21;
@@ -15,35 +19,6 @@ public class Scanner implements AutoCloseable {
     private final CharBuffer bufFrw = CharBuffer.allocate(this.BUFFER_SIZE).limit(0);
 
     public int linesSkipped = 0;
-
-    private final Predicate<Character> isNotWhitespace = new Predicate<Character>() {
-        @Override
-        public boolean test(Character c) {
-            return !Character.isWhitespace(c);
-        }
-    };
-
-    private final Predicate<Character> isWordCharacter = new Predicate<Character>() {
-        @Override
-        public boolean test(Character c) {
-            return Character.isLetter(c) || Character.getType(c) == Character.DASH_PUNCTUATION || c == '\'';
-        }
-    };
-
-    private final Predicate<Character> isLineSeparator = new Predicate<Character>()  {
-        // https://en.wikipedia.org/wiki/Newline#Unicode
-        @Override
-        public boolean test(Character c) {
-            return
-                    c == 0x000A || // LF | Line feed
-                            c == 0x000B || // VT | Vertical tab
-                            c == 0x000C || // FF | Form feed
-                            c == 0x000D || // CR | Carriage return
-                            c == 0x0085 || // NL | Next line
-                            c == 0x2028 || // LS | Line separator
-                            c == 0x2029;   // PS | Paragraph separator
-        }
-    };
 
     // =================================[ CONSTRUCTORS ]=================================
 
@@ -58,6 +33,10 @@ public class Scanner implements AutoCloseable {
 
     public Scanner(InputStream is) {
         this.reader = new BufferedReader(new InputStreamReader(is));
+    }
+
+    public Scanner(String s) {
+        this.reader = new StringReader(s);
     }
 
     // ==========================[ BASIC READER INTERACTIONS ]===========================
@@ -131,7 +110,7 @@ public class Scanner implements AutoCloseable {
                         buf.position(buf.position() - 1);
                         mustExit = true;
                         break;
-                    } else if (this.isLineSeparator.test(cur)) {
+                    } else if (new IsLineSeparator().test(cur)) {
                         this.linesSkipped++;
                         if (cur == '\r') {
                             if (isEmpty(buf)) {
@@ -178,7 +157,7 @@ public class Scanner implements AutoCloseable {
                     this.buf.position(this.buf.position() - 1);
                     break outer;
                 }
-                if (isLineSeparator.test(cur)) {
+                if (new IsLineSeparator().test(cur)) {
                     this.linesSkipped++;
                     if (cur == '\r') {
                         if (isEmpty(this.buf)) {
@@ -218,7 +197,7 @@ public class Scanner implements AutoCloseable {
 
     public boolean hasNextInt() throws IOException {
         try {
-            Integer.parseInt(this.nextToken(this.bufFrw, this.isNotWhitespace, true));
+            Integer.parseInt(this.nextToken(this.bufFrw, new IsNotWhitespace(), true));
             return true;
         } catch (NumberFormatException e) {
             return false;
@@ -227,14 +206,14 @@ public class Scanner implements AutoCloseable {
 
     public int nextInt() throws InputMismatchException, IOException {
         try {
-            return Integer.parseInt(this.nextToken(this.buf, this.isNotWhitespace, false));
+            return Integer.parseInt(this.nextToken(this.buf, new IsNotWhitespace(), false));
         } catch (NumberFormatException e) {
             throw new InputMismatchException();
         }
     }
 
     public boolean hasNextHex() throws IOException {
-        String token = this.nextToken(this.bufFrw, this.isNotWhitespace, true);
+        String token = this.nextToken(this.bufFrw, new IsNotWhitespace(), true);
         if (token.startsWith("0x") || token.startsWith("0X")) {
             try {
                 Integer.parseUnsignedInt(token.substring(2), 16);
@@ -245,7 +224,7 @@ public class Scanner implements AutoCloseable {
     }
 
     public int nextHex() throws InputMismatchException, IOException {
-        String token = this.nextToken(this.buf, this.isNotWhitespace, false);
+        String token = this.nextToken(this.buf, new IsNotWhitespace(), false);
         if (token.startsWith("0x") || token.startsWith("0X")) {
             try {
                 return Integer.parseUnsignedInt(token.substring(2), 16);
@@ -276,7 +255,7 @@ public class Scanner implements AutoCloseable {
     }
 
     public boolean hasNextLit() throws IOException {
-        String token = this.nextToken(this.bufFrw, this.isNotWhitespace, true);
+        String token = this.nextToken(this.bufFrw, new IsNotWhitespace(), true);
         try {
             Integer.parseInt(literalToDigital(token));
             return true;
@@ -286,7 +265,7 @@ public class Scanner implements AutoCloseable {
     }
 
     public int nextLit() throws InputMismatchException, IOException {
-        String token = this.nextToken(this.buf, this.isNotWhitespace, false);
+        String token = this.nextToken(this.buf, new IsNotWhitespace(), false);
         try {
             return Integer.parseInt(literalToDigital(token));
         } catch (NumberFormatException e) {
@@ -312,11 +291,11 @@ public class Scanner implements AutoCloseable {
     // ===================================[ WORDS ]======================================
 
     public boolean hasNextWord() throws IOException {
-        return !this.nextToken(this.bufFrw, this.isWordCharacter, true).isEmpty();
+        return !this.nextToken(this.bufFrw, new IsWordCharacter(), true).isEmpty();
     }
 
     public String nextWord() throws InputMismatchException, IOException {
-        String token = this.nextToken(this.buf, this.isWordCharacter, false);
+        String token = this.nextToken(this.buf, new IsWordCharacter(), false);
         if (token.isEmpty()) {
             throw new InputMismatchException();
         }

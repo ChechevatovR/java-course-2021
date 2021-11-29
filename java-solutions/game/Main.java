@@ -2,10 +2,10 @@ package game;
 
 import scanner.Scanner;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 
 public class Main {
     public static void main(String[] args) {
@@ -13,13 +13,14 @@ public class Main {
                 FileOutputStream fileOutputStream = new FileOutputStream("log.txt");
                 OutputStreamWriter logger = new OutputStreamWriter(fileOutputStream);
         ) {
-            int m = 3;
-            int n = 3;
-            int k = 3;
+            int m = 11;
+            int n = 11;
+            int k = 7;
             final int result = new TurnByTurnGame(
                     new MNKBoard(m, n, k),
                     new HumanPlayer(new Scanner(System.in), 1),
                     new HumanPlayer(new Scanner(System.in), 2)
+//                    new RandomPlayer(11, 11)
             ).play(logger);
             System.out.println("The game has ended, and the result is:");
             if (result > 0) {

@@ -6,12 +6,13 @@ import java.util.Objects;
 
 public class TurnByTurnGame {
     private final Board board;
-    private final Player[] players;
+    private final Player[] players = new Player[2];
 
-    public TurnByTurnGame(Board board, Player... players) {
+    public TurnByTurnGame(Board board, Player player1, Player player2) {
         Objects.requireNonNull(board);
         this.board = board;
-        this.players = players;
+        this.players[0] = player1;
+        this.players[1] = player2;
     }
 
     public int play(OutputStreamWriter logWriter) {

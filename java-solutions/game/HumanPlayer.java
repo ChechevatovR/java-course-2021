@@ -2,10 +2,14 @@ package game;
 
 import java.io.IOException;
 import java.util.InputMismatchException;
+import java.util.function.Predicate;
+
 import scanner.Scanner;
+import util.IsLineSeparator;
 
 public class HumanPlayer implements Player {
     private final Scanner in;
+    private final static Predicate<Character> isNotLineSeparator = new IsLineSeparator().negate();
 
     public HumanPlayer(Scanner in, int index) {
         this.in = in;
@@ -25,6 +29,11 @@ public class HumanPlayer implements Player {
         System.out.println();
     }
 
+    private static void printYourMoveIsInvalid(String format) {
+        System.out.println("Your input is invalid.");
+        System.out.println("Please enter with the required format (" + format + "):");
+    }
+
     @Override
     public Move makeMove(Position position) {
         System.out.println("Current position is: ");
@@ -38,62 +47,40 @@ public class HumanPlayer implements Player {
         System.out.println("Current position is: ");
         System.out.println(position.toHumanReadableString());
         System.out.println("Your opponent suggested a draw. Do you agree (Y/N)? ");
-        boolean proceed = false;
         do {
-            char c = 0;
+            String answer;
             try {
-                proceed = in.hasSomething();
-                if (!proceed) {
-                    break;
+                if (in.hasNextToken(isNotLineSeparator)) {
+                    answer = in.nextToken(isNotLineSeparator);
+                    switch (answer) {
+                        case "Y":
+                            return true;
+                        case "N":
+                            return false;
+                        default:
+                            printYourMoveIsInvalid("\"Y\"/\"N\"");
+                    }
+                } else {
+                    return true;
                 }
-                if (in.hasNextToken(ch -> Character.isLetter(ch))) {
-                    c = in.nextToken(ch -> Character.isLetter(ch)).charAt(0);
-                }
-                proceed = in.hasSomething();
             } catch (IOException e) {
                 System.out.println("There are IOException problems between you and me, ");
                 System.out.println("so I was not able to read your input. ");
                 System.out.println(e.getMessage() + ", to be exact. ");
                 System.out.println("Please, try again: ");
-                continue;
             }
-            switch (c) {
-                case 'Y':
-                    return true;
-                case 'N':
-                    return false;
-                default:
-                    System.out.println("The response you entered is invalid.");
-                    System.out.println("Please enter something valid (\"Y\"/\"N\"): ");
-            }
-        } while (proceed);
-        return true;
+        } while (true);
     }
 
     private Move getMove(Position position) {
-        Move move = null;
-        boolean proceed = false;
         do {
+            String answer;
             try {
-                proceed = in.hasSomething();
-                if (!proceed) {
-                    break;
-                }
-                if (in.hasNextInt()) {
-                    int y = in.nextInt() - 1;
-                    int x = in.nextInt() - 1;
-                    move = new Move(x, y, position.getCurPlayerCell());
+                if (in.hasNextToken(isNotLineSeparator)) {
+                    answer = in.nextToken(isNotLineSeparator);
                 } else {
-                    String command = in.nextWord();
-                    if (command.equals("surrender")) {
-                        // Returning an invalid turn, which will result in loss
-                        return new Move(-1, -1, Cell.E);
-                    } else if (command.equals("draw")) {
-                        return new Move(-1, -1, Cell.E, true);
-                    }
+                    answer = "surrender";
                 }
-            } catch (InputMismatchException ignored) {
-
             } catch (IOException e) {
                 System.out.println("There are IOException problems between you and me, ");
                 System.out.println("so I was not able to read your input. ");
@@ -101,12 +88,41 @@ public class HumanPlayer implements Player {
                 System.out.println("Please, try again: ");
                 continue;
             }
+            switch (answer) {
+                case "surrender":
+                    return new Move(-1, -1, Cell.E);
+                case "draw":
+                    return new Move(-1, -1, Cell.E, true);
+                default:
+                    // Intentionally empty
+            }
+            Scanner answerParser = new Scanner(answer);
+            Move move;
+            try {
+                if (answerParser.hasNextInt()) {
+                    int y = answerParser.nextInt() - 1;
+                    int x = answerParser.nextInt() - 1;
+                    move = new Move(x, y, position.getCurPlayerCell());
+                    if (answerParser.hasNextInt()) {
+                        printYourMoveIsInvalid(">2< positive integer numbers separated by a whitespace");
+                        continue;
+                    }
+                } else {
+                    printYourMoveIsInvalid("2 positive >integer numbers< >separated by a whitespace<");
+                    continue;
+                }
+            } catch (InputMismatchException e) {
+                printYourMoveIsInvalid("2 positive >integer numbers< separated by a whitespace");
+                continue;
+            } catch (IOException e) {
+                throw new AssertionError("Got an IO Exception while trying to read from RAM", e);
+            }
             if (position.isValid(move)) {
                 return move;
+            } else {
+                printYourMoveIsInvalid("2 >positive< integer numbers separated by" +
+                        " a whitespace >corresponding to an empty cell<");
             }
-            System.out.println("The move you entered is invalid.");
-            System.out.println("Please enter something valid: ");
-        } while (proceed);
-        return new Move(-1, -1, Cell.E);
+        } while (true);
     }
 }
