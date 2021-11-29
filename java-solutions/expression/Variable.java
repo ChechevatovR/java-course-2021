@@ -21,12 +21,7 @@ public class Variable implements Expression {
     public String toMiniString() {
         return this.name;
     }
-    
-    @Override 
-    public String toMiniString(boolean printBraces) {
-        return this.toMiniString();
-    }
-    
+
     @Override
     public int hashCode() {
         return this.name.hashCode();

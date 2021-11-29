@@ -7,8 +7,8 @@ public class Add extends BinaryOperatorExpression {
     
     @Override
     public String toMiniString() {
-        String opLeft = this.operandLeft.toMiniString(false);
-        String opRight = this.operandRight.toMiniString(false);
-        return opLeft + " + " + opRight;
+        return this.operandLeft.toMiniString()
+            + " + "
+            + this.operandRight.toMiniString();
     }
 }

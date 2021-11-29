@@ -1,5 +1,7 @@
 package expression;
 
+import util.StringWrapper;
+
 public class Multiply extends BinaryOperatorExpression {
     public Multiply(Expression left, Expression right) {
         super(left, right, (a, b) -> a * b, "*");
@@ -7,25 +9,19 @@ public class Multiply extends BinaryOperatorExpression {
     
     @Override
     public String toMiniString() {
-        String opLeft = this.operandLeft.toMiniString(
-            this.operandLeft instanceof Add 
-            || this.operandLeft instanceof Subtract 
+        return StringWrapper.wrapIf(
+                this.operandLeft.toMiniString(),
+                "(", ")",
+                this.operandLeft instanceof Add
+                        || this.operandLeft instanceof Subtract
+        )
+                + " * "
+                + StringWrapper.wrapIf(
+                this.operandRight.toMiniString(),
+                "(", ")",
+                this.operandRight instanceof Add
+                        || this.operandRight instanceof Subtract
+                        || this.operandRight instanceof Divide
         );
-        String opRight = this.operandRight.toMiniString(
-            this.operandRight instanceof Add 
-            || this.operandRight instanceof Subtract
-            || this.operandRight instanceof Divide
-        );
-        return opLeft + " * " + opRight;
-    }
-    
-    @Override
-    public String toMiniString(boolean printBraces) {
-        String res = this.toMiniString();
-        if (printBraces) {
-            return "(" + res + ")";
-        } else {
-            return res;
-        }
     }
 }

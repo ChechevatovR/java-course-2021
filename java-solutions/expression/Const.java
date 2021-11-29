@@ -21,12 +21,7 @@ public class Const implements Expression {
     public String toMiniString() {
         return Integer.toString(this.value);
     }
-    
-    @Override 
-    public String toMiniString(boolean printBraces) {
-        return this.toMiniString();
-    }
-    
+
     @Override
     public int hashCode() {
         return value;
