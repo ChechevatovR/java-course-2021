@@ -5,12 +5,11 @@ import java.math.BigDecimal;
 public class Const implements Expression, TripleExpression, BigDecimalExpression {
     final BigDecimal value;
 
-    public Const(BigDecimal value) {
-        this.value = value;
-    }
-
-    public Const(int value) {
-        this.value = new BigDecimal(value);
+    public Const(Object o) {
+        if (o instanceof Integer) {
+            o = new BigDecimal((int) o);
+        }
+        this.value = (BigDecimal) o;
     }
 
     @Override
