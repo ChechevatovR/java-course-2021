@@ -13,8 +13,8 @@ public class Main {
                 FileOutputStream fileOutputStream = new FileOutputStream("log.txt");
                 OutputStreamWriter logger = new OutputStreamWriter(fileOutputStream);
         ) {
-            int m = 11;
-            int n = 11;
+            int m = 3;
+            int n = 3;
             int k = 7;
             final int result = new TurnByTurnGame(
                     new MNKBoard(m, n, k),
