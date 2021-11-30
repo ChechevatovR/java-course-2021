@@ -8,3 +8,5 @@
 /java-solutions/expression/common/
 /java-solutions/expression/Expression.java
 /java-solutions/expression/ToMiniString.java
+/java-solutions/expression/BigDecimalExpression.java
+/java-solutions/expression/TripleExpression.java

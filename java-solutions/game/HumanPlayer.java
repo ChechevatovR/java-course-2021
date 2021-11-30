@@ -11,7 +11,7 @@ public class HumanPlayer implements Player {
     private final Scanner in;
     private final static Predicate<Character> isNotLineSeparator = new IsLineSeparator().negate();
 
-    public HumanPlayer(Scanner in, int index) {
+    public HumanPlayer(Scanner in) {
         this.in = in;
         System.out.println("You are going to play an \"M, N, K Game\", also known as K-in-line on an MxN board.");
         System.out.println("The rules are simple as they are in Tic-Tac-Toe, but with the differences mentioned above.");
@@ -25,8 +25,6 @@ public class HumanPlayer implements Player {
         System.out.println("and will result in your loss");
         System.out.println("Enjoy your game!");
         System.out.println();
-        System.out.println("You are player №" + index);
-        System.out.println();
     }
 
     private static void printYourMoveIsInvalid(String format) {
@@ -38,7 +36,10 @@ public class HumanPlayer implements Player {
     public Move makeMove(Position position) {
         System.out.println("Current position is: ");
         System.out.println(position.toHumanReadableString());
-        System.out.println("It is now your turn with " + position.getCurPlayerCell() + ": ");
+        System.out.println(
+                "Player " + (position.getCurPlayerInd() + 1)
+                + ", it is now your turn with " + position.getCurPlayerCell() + ": "
+        );
         return this.getMove(position);
     }
 

@@ -18,9 +18,8 @@ public class Main {
             int k = 7;
             final int result = new TurnByTurnGame(
                     new MNKBoard(m, n, k),
-                    new HumanPlayer(new Scanner(System.in), 1),
-                    new HumanPlayer(new Scanner(System.in), 2)
-//                    new RandomPlayer(11, 11)
+                    new HumanPlayer(new Scanner(System.in)),
+                    new RandomPlayer()
             ).play(logger);
             System.out.println("The game has ended, and the result is:");
             if (result > 0) {

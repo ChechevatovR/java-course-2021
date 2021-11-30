@@ -47,7 +47,7 @@ public class MNKBoard implements Board {
 
     @Override
     public Position getPosition() {
-        return new MNKPosition(this.field, this.k, this.curPlayerCell, this.turnsDone);
+        return new MNKPosition(this.field, this.k, this.curPlayerIndex, this.curPlayerCell, this.turnsDone);
     }
 
     @Override

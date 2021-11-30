@@ -11,6 +11,8 @@ public interface Position {
 
     String toHumanReadableString();
 
+    int getCurPlayerInd();
+
     int getM();
 
     int getN();

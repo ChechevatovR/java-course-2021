@@ -18,14 +18,21 @@ public class MNKPosition implements Position {
     private final int n;
     private final int k;
 
+    private final int curPlayerInd;
     private final Cell curPlayerCell;
     private final int turnsDone;
 
-    public MNKPosition(Cell[][] field, int k, Cell curPlayerCell, int turnsDone) {
-        this.field = field.clone();
+    @Override
+    public int getCurPlayerInd() {
+        return this.curPlayerInd;
+    }
+
+    public MNKPosition(Cell[][] field, int k, int curPlayerInd, Cell curPlayerCell, int turnsDone) {
+        this.field = field;
         this.m = field[0].length;
         this.n = field.length;
         this.k = k;
+        this.curPlayerInd = curPlayerInd;
         this.curPlayerCell = curPlayerCell;
         this.turnsDone = turnsDone;
         this.mPadWidth = (int) (Math.log10(this.m) + 1);
