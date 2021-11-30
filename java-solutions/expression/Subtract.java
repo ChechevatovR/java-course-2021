@@ -4,7 +4,7 @@ import util.StringWrapper;
 
 public class Subtract extends BinaryOperatorExpression {
     public Subtract(Expression left, Expression right) {
-        super(left, right, (a, b) -> a - b, "-");
+        super(left, right, (a, b) -> a.subtract(b), "-");
     }
     
     @Override

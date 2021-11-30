@@ -2,7 +2,7 @@ package expression;
 
 public class Add extends BinaryOperatorExpression {
     public Add(Expression left, Expression right) {
-        super(left, right, (a, b) -> a + b, "+");
+        super(left, right, (a, b) -> a.add(b), "+");
     }
     
     @Override

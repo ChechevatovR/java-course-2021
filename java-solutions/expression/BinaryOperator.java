@@ -1,5 +1,7 @@
 package expression;
 
+import java.math.BigDecimal;
+
 public interface BinaryOperator {
-    int apply(int left, int right);
+    BigDecimal apply(BigDecimal left, BigDecimal right);
 }

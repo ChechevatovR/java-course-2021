@@ -2,9 +2,11 @@ package expression;
 
 import util.StringWrapper;
 
+import java.math.RoundingMode;
+
 public class Multiply extends BinaryOperatorExpression {
     public Multiply(Expression left, Expression right) {
-        super(left, right, (a, b) -> a * b, "*");
+        super(left, right, (a, b) -> a.multiply(b), "*");
     }
     
     @Override
