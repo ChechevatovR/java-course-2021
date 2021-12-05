@@ -3,13 +3,18 @@ package expression;
 import java.math.BigDecimal;
 
 public class Const implements Expression, TripleExpression, BigDecimalExpression {
-    final BigDecimal value;
+    private BigDecimal value;
 
-    public Const(Object o) {
-        if (o instanceof Integer) {
-            o = new BigDecimal((int) o);
-        }
-        this.value = (BigDecimal) o;
+    public Const(BigDecimal value) {
+        this.value = value;
+    }
+
+    public Const(int value) {
+        this.value = new BigDecimal(value);
+    }
+
+    public Const negate() {
+        return new Const(this.value.negate());
     }
 
     @Override
