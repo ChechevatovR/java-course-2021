@@ -32,7 +32,7 @@ public class WsppSortedSecondG {
                     if (wordMap == null) {
                         words.add(word);
                         line = new IntList(curPos);
-                        wordMap = new TreeMap<Integer, IntList>();
+                        wordMap = new HashMap<Integer, IntList>();
                         wordMap.put(curLine, line);
                         wordsByLines.put(word, wordMap);
                     } else {
@@ -68,18 +68,16 @@ public class WsppSortedSecondG {
             try {
                 for (String word : words) {
                     StringBuilder sb = new StringBuilder();
-                    sb.append(word).append(" ").append(wordCounts.get(word)).append(" ");
+                    sb.append(word).append(" ");
+                    sb.append(wordCounts.get(word)).append(" ");
                     for (Map.Entry<Integer, IntList> entry : wordsByLines.get(word).entrySet()) {
-                        String s = entry.getValue().toString();
-                        if (!s.isEmpty()) {
-                            sb.append(s).append(" ");
+                        IntList positions = entry.getValue();
+                        for (int i = 1; i < positions.length; i += 2) {
+                            sb.append(positions.get(i)).append(" ");
                         }
                     }
-                    if (sb.length() > 0 && sb.charAt(sb.length() - 1) == ' ') {
-                        sb.deleteCharAt(sb.length() - 1);
-                    }
-                    output.write(sb.toString());
-                    output.write(System.lineSeparator());
+                    sb.setLength(sb.length() - 1);
+                    output.append(sb.toString()).append(System.lineSeparator());
                 }
             } catch (IOException e) {
                 System.err.println("IO Exception happened while writing output file: " + e.getMessage());
