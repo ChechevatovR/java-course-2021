@@ -1,6 +1,6 @@
 package game;
 
-import scanner.Scanner;
+import util.Scanner;
 
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;

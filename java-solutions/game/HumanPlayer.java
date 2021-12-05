@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.function.Predicate;
 
-import scanner.Scanner;
+import util.Scanner;
 import util.IsLineSeparator;
 
 public class HumanPlayer implements Player {
