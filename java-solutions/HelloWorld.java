@@ -4,7 +4,7 @@ public class HelloWorld {
 			return "";
         }
 		char firstLetter = Character.toUpperCase(name.charAt(0));
-		String rest = name.substring(1, name.length());
+		String rest = name.substring(1);
 		return firstLetter + rest;
 	}
 	
