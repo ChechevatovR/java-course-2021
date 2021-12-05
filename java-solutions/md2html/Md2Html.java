@@ -2,7 +2,7 @@ package md2html;
 
 import markup.*;
 import util.Pair;
-import scanner.Scanner;
+import util.Scanner;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

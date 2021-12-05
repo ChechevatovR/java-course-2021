@@ -1,4 +1,4 @@
-import scanner.Scanner;
+import util.Scanner;
 
 import java.io.IOException;
 import java.util.ArrayList;

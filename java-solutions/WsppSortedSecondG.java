@@ -1,54 +1,13 @@
-import scanner.Scanner;
+import util.Scanner;
+
+import util.IntList;
 
 import java.io.*;
-import java.util.*;
 import java.nio.charset.StandardCharsets;
-
-class IntList {
-    private int[] c;
-    public int length;
-
-    IntList() {
-        c = new int[1];
-        length = 0;
-    }
-
-    IntList(int val) {
-        c = new int[1];
-        c[0] = val;
-        length = 1;
-    }
-
-    public void add(int val) {
-        if (length >= c.length) {
-            c = Arrays.copyOf(c, length * 2);
-        }
-        c[length++] = val;
-    }
-
-    public int get(int pos) {
-        return c[pos];
-    }
-
-    public void shrink() {
-        c = Arrays.copyOf(c, length);
-    }
-
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 1; i < length - 1; i += 2) {
-            sb.append(c[i]);
-            sb.append(" ");
-        }
-        if (length % 2 == 0) {
-            sb.append(c[length - 1]);
-        }
-        if (sb.length() > 0 && sb.charAt(sb.length() - 1) == ' ') {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-        return sb.toString();
-    }
-}
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WsppSortedSecondG {
     public static void main(String[] args) {

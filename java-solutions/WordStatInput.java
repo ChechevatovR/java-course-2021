@@ -1,4 +1,4 @@
-import scanner.Scanner;
+import util.Scanner;
 
 import java.io.*;
 import java.util.Arrays;

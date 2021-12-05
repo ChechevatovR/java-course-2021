@@ -1,4 +1,4 @@
-package scanner;
+package util;
 
 import java.io.*;
 import java.nio.CharBuffer;
