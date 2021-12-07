@@ -1,9 +1,11 @@
 package expression;
 
+import java.beans.Expression;
 import java.math.BigDecimal;
 import java.util.Map;
 
 public class Variable implements Expression, BigDecimalExpression, TripleExpression {
+    // :NOTE: доступ
     static Map<String, Integer> VAR_NAME_NUMBERS = Map.of(
             "x", 0,
             "y", 1,

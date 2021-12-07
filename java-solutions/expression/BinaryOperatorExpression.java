@@ -1,10 +1,13 @@
 package expression;
 
+import java.beans.Expression;
 import java.math.BigDecimal;
 
 public class BinaryOperatorExpression implements Expression, ToMiniString, BigDecimalExpression, TripleExpression {
+    // :NOTE: Доступ
     final Expression operandLeft;
     final Expression operandRight;
+    // :NOTE: Лишние
     final BinaryOperator operator;
     final String operatorString;
     
@@ -18,6 +21,7 @@ public class BinaryOperatorExpression implements Expression, ToMiniString, BigDe
     @Override
     public BigDecimal evaluate(BigDecimal x) {
         return this.operator.apply(
+                // :NOTE: (...)
             ((BigDecimalExpression) this.operandLeft).evaluate(x),
             ((BigDecimalExpression) this.operandRight).evaluate(x)
         );
@@ -41,13 +45,7 @@ public class BinaryOperatorExpression implements Expression, ToMiniString, BigDe
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("(");
-        sb.append(this.operandLeft.toString());
-        sb.append(" ").append(this.operatorString).append(" ");
-        sb.append(this.operandRight.toString());
-        sb.append(")");
-        return sb.toString();
+        return "(" + operandLeft + ") " + operatorString + " (" + operatorString + ")";
     }
 
     @Override
