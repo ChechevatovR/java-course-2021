@@ -1,14 +1,21 @@
 package expression;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 public class Variable implements Expression, BigDecimalExpression, TripleExpression {
+    static Map<String, Integer> VAR_NAME_NUMBERS = Map.of(
+            "x", 0,
+            "y", 1,
+            "z", 2
+    );
+
     final String name;
-    
+
     public Variable(String name) {
         this.name = name;
-        if (!name.equals("x") && !name.equals("y") && !name.equals("z")) {
-            throw new AssertionError("Variable has unsupported name. Only x, y, z are supported");
+        if (!VAR_NAME_NUMBERS.containsKey(name)) {
+            throw new AssertionError("Variable has invalid name");
         }
     }
 
@@ -39,7 +46,7 @@ public class Variable implements Expression, BigDecimalExpression, TripleExpress
     public String toString() {
         return this.name;
     }
-    
+
     @Override
     public String toMiniString() {
         return this.name;
@@ -49,7 +56,7 @@ public class Variable implements Expression, BigDecimalExpression, TripleExpress
     public int hashCode() {
         return this.name.hashCode();
     }
-    
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof Variable) {
