@@ -1,7 +1,6 @@
 package expression;
 
 import util.StringWrapper;
-
 import java.math.BigDecimal;
 
 public abstract class BinaryOperatorExpression implements PrioritizedExpression {
@@ -20,6 +19,7 @@ public abstract class BinaryOperatorExpression implements PrioritizedExpression 
     @Override
     public BigDecimal evaluate(BigDecimal x) {
         return this.operator.apply(
+                // :NOTE: (...)
             ((BigDecimalExpression) this.operandLeft).evaluate(x),
             ((BigDecimalExpression) this.operandRight).evaluate(x)
         );
@@ -43,7 +43,7 @@ public abstract class BinaryOperatorExpression implements PrioritizedExpression 
 
     @Override
     public String toString() {
-        return "(" + operandLeft.toString() + " " + operatorString + " " + operandRight.toString() + ")";
+        return "(" + operandLeft + " " + operatorString + " " + operandRight + ")";
     }
 
     @Override
