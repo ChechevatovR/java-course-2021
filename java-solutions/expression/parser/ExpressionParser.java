@@ -7,95 +7,95 @@ public class ExpressionParser extends BaseParser implements Parser {
         super();
     }
 
-    private static TripleExpression negator(TripleExpression expression, boolean condition) {
+    private static PrioritizedExpression negator(PrioritizedExpression expression, boolean condition) {
         if (condition) {
-            return new UnaryMinus((PrioritizedExpression) expression);
+            return new UnaryMinus(expression);
         } else {
             return expression;
         }
     }
 
     @Override
-    public TripleExpression parse(String expression) {
+    public PrioritizedExpression parse(String expression) {
         this.source = new StringSource(expression);
         this.take();
         return this.parseExpression();
     }
 
-    private TripleExpression parseExpression() {
+    private PrioritizedExpression parseExpression() {
         return this.parseShift();
     }
 
-    private TripleExpression parseShift() {
-        TripleExpression result = this.parseAddition();
+    private PrioritizedExpression parseShift() {
+        PrioritizedExpression result = this.parseAddition();
         this.skipWhitespaces();
         if (this.take('<')) {
             this.expect('<');
-            return new ShiftLeft((PrioritizedExpression) result, (PrioritizedExpression) this.parseAddition());
+            return new ShiftLeft(result, this.parseAddition());
         }
         else if (this.take('>')) {
             this.expect('>');
             if (!this.take('>')) {
-                return new ShiftRightArifm((PrioritizedExpression) result,(PrioritizedExpression) this.parseAddition());
+                return new ShiftRightArifm(result, this.parseAddition());
             }
-            return new ShiftRight((PrioritizedExpression) result, (PrioritizedExpression) this.parseAddition());
+            return new ShiftRight(result, this.parseAddition());
         }
         return result;
     }
 
-    private TripleExpression parseAddition() {
-        TripleExpression result = this.parseMultiplication();
+    private PrioritizedExpression parseAddition() {
+        PrioritizedExpression result = this.parseMultiplication();
         this.skipWhitespaces();
         while (this.test('+') || this.test('-')) {
             if (this.take('+')) {
-                result = new Add((PrioritizedExpression) result, (PrioritizedExpression) this.parseMultiplication());
+                result = new Add(result, this.parseMultiplication());
             } else if (this.take('-')) {
-                result = new Subtract((PrioritizedExpression) result, (PrioritizedExpression) this.parseMultiplication());
+                result = new Subtract(result, this.parseMultiplication());
             }
             this.skipWhitespaces();
         }
         return result;
     }
 
-    private TripleExpression parseMultiplication() {
-        TripleExpression result = this.parseUnary(false);
+    private PrioritizedExpression parseMultiplication() {
+        PrioritizedExpression result = this.parseUnary(false);
         this.skipWhitespaces();
         while (this.test('*') || this.test('/')) {
             if (this.take('*')) {
-                result = new Multiply((PrioritizedExpression) result,(PrioritizedExpression) this.parseUnary(false));
+                result = new Multiply(result, this.parseUnary(false));
             } else if (this.take('/')) {
-                result = new Divide((PrioritizedExpression) result, (PrioritizedExpression) this.parseUnary(false));
+                result = new Divide(result, this.parseUnary(false));
             }
             this.skipWhitespaces();
         }
         return result;
     }
 
-    private TripleExpression parseBraces() {
-        TripleExpression result = this.parseExpression();
+    private PrioritizedExpression parseBraces() {
+        PrioritizedExpression result = this.parseExpression();
         this.expect(')');
         return result;
     }
 
-    private TripleExpression parseUnary(boolean isNegated) {
+    private PrioritizedExpression parseUnary(boolean isNegated) {
         this.skipWhitespaces();
         if (this.take('-')) {
             return this.parseUnary(!isNegated);
         }
         if (this.take('l')) {
             this.expect('0');
-            return new CountLeadingZeroes((PrioritizedExpression) this.parseUnary(isNegated));
+            return new CountLeadingZeroes(this.parseUnary(isNegated));
         }
         if (this.take('t')) {
             this.expect('0');
-            return new CountTrailingZeroes((PrioritizedExpression) this.parseUnary(isNegated));
+            return new CountTrailingZeroes(this.parseUnary(isNegated));
         }
         else {
             return this.parseValue(isNegated);
         }
     }
 
-    private TripleExpression parseValue(boolean isNegated) {
+    private PrioritizedExpression parseValue(boolean isNegated) {
         this.skipWhitespaces();
         if (this.take('(')) {
             return negator(this.parseBraces(), isNegated);
