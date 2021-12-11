@@ -13,7 +13,7 @@ public class ExpressionParser extends BaseParser implements Parser {
 
     private static TripleExpression negator(TripleExpression expression, boolean condition) {
         if (condition) {
-            return new UnaryMinus((Expression) expression);
+            return new UnaryMinus((PrioritizedExpression) expression);
         } else {
             return expression;
         }
@@ -28,7 +28,24 @@ public class ExpressionParser extends BaseParser implements Parser {
     }
 
     private TripleExpression parseExpression() {
-        return this.parseAddition();
+        return this.parseShift();
+    }
+
+    private TripleExpression parseShift() {
+        TripleExpression result = this.parseAddition();
+        this.skipWhitespaces();
+        if (this.take('<')) {
+            this.expect('<');
+            return new ShiftLeft((PrioritizedExpression) result, (PrioritizedExpression) this.parseAddition());
+        }
+        else if (this.take('>')) {
+            this.expect('>');
+            if (!this.take('>')) {
+                return new ShiftRightArifm((PrioritizedExpression) result,(PrioritizedExpression) this.parseAddition());
+            }
+            return new ShiftRight((PrioritizedExpression) result, (PrioritizedExpression) this.parseAddition());
+        }
+        return result;
     }
 
     private TripleExpression parseAddition() {
@@ -36,9 +53,9 @@ public class ExpressionParser extends BaseParser implements Parser {
         this.skipWhitespaces();
         while (this.test('+') || this.test('-')) {
             if (this.take('+')) {
-                result = new Add((Expression) result,(Expression) this.parseMultiplication());
+                result = new Add((PrioritizedExpression) result, (PrioritizedExpression) this.parseMultiplication());
             } else if (this.take('-')) {
-                result = new Subtract((Expression) result,(Expression) this.parseMultiplication());
+                result = new Subtract((PrioritizedExpression) result, (PrioritizedExpression) this.parseMultiplication());
             }
             this.skipWhitespaces();
         }
@@ -50,9 +67,9 @@ public class ExpressionParser extends BaseParser implements Parser {
         this.skipWhitespaces();
         while (this.test('*') || this.test('/')) {
             if (this.take('*')) {
-                result = new Multiply((Expression) result,(Expression) this.parseUnary(false));
+                result = new Multiply((PrioritizedExpression) result,(PrioritizedExpression) this.parseUnary(false));
             } else if (this.take('/')) {
-                result = new Divide((Expression) result,(Expression) this.parseUnary(false));
+                result = new Divide((PrioritizedExpression) result, (PrioritizedExpression) this.parseUnary(false));
             }
             this.skipWhitespaces();
         }
@@ -69,6 +86,14 @@ public class ExpressionParser extends BaseParser implements Parser {
         this.skipWhitespaces();
         if (this.take('-')) {
             return this.parseUnary(!isNegated);
+        }
+        if (this.take('l')) {
+            this.expect('0');
+            return new CountLeadingZeroes((PrioritizedExpression) this.parseUnary(isNegated));
+        }
+        if (this.take('t')) {
+            this.expect('0');
+            return new CountTrailingZeroes((PrioritizedExpression) this.parseUnary(isNegated));
         }
         else {
             return this.parseValue(isNegated);
