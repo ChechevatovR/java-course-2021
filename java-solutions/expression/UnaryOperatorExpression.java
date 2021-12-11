@@ -1,13 +1,15 @@
 package expression;
 
+import util.StringWrapper;
+
 import java.math.BigDecimal;
 
-public class UnaryOperatorExpression implements Expression, ToMiniString, BigDecimalExpression, TripleExpression {
-    final Expression operand;
+public abstract class UnaryOperatorExpression implements PrioritizedExpression {
+    final PrioritizedExpression operand;
     final UnaryOperator operator;
     final String operatorString;
 
-    public UnaryOperatorExpression(Expression operand, UnaryOperator operator, String operatorString) {
+    public UnaryOperatorExpression(PrioritizedExpression operand, UnaryOperator operator, String operatorString) {
         this.operand = operand;
         this.operator = operator;
         this.operatorString = operatorString;
@@ -34,17 +36,18 @@ public class UnaryOperatorExpression implements Expression, ToMiniString, BigDec
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.operatorString);
-        sb.append("(");
-        sb.append(this.operand.toString());
-        sb.append(")");
-        return sb.toString();
+        return this.operatorString + "(" + this.operand + ")";
     }
 
     @Override
     public String toMiniString() {
-        return this.toString();
+        return this.operatorString
+                + (this.operand instanceof BinaryOperatorExpression ? "" : " ")
+                + StringWrapper.wrapIf(
+                    this.operand.toMiniString(),
+                    "(", ")",
+                    this.getPriority() > this.operand.getPriority()
+        );
     }
 
     @Override

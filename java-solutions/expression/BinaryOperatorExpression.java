@@ -1,16 +1,18 @@
 package expression;
 
+import util.StringWrapper;
+
 import java.math.BigDecimal;
 
-public class BinaryOperatorExpression implements Expression, ToMiniString, BigDecimalExpression, TripleExpression {
-    final Expression operandLeft;
-    final Expression operandRight;
-    final BinaryOperator operator;
-    final String operatorString;
+public abstract class BinaryOperatorExpression implements PrioritizedExpression {
+    protected final PrioritizedExpression operandLeft;
+    protected final PrioritizedExpression operandRight;
+    private final BinaryOperator operator;
+    private final String operatorString;
     
-    public BinaryOperatorExpression(Expression left, Expression right, BinaryOperator operator, String operatorString) {
-        this.operandLeft = left;
-        this.operandRight = right;
+    public BinaryOperatorExpression(PrioritizedExpression left, PrioritizedExpression right, BinaryOperator operator, String operatorString) {
+        this.operandLeft = (PrioritizedExpression) left;
+        this.operandRight = (PrioritizedExpression) right;
         this.operator = operator;
         this.operatorString = operatorString;
     }
@@ -41,18 +43,24 @@ public class BinaryOperatorExpression implements Expression, ToMiniString, BigDe
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("(");
-        sb.append(this.operandLeft.toString());
-        sb.append(" ").append(this.operatorString).append(" ");
-        sb.append(this.operandRight.toString());
-        sb.append(")");
-        return sb.toString();
+        return "(" + operandLeft.toString() + " " + operatorString + " " + operandRight.toString() + ")";
     }
 
     @Override
     public String toMiniString() {
-        return this.toString();
+        return StringWrapper.wrapIf(
+                this.operandLeft.toMiniString(),
+                "(", ")",
+                Math.abs(this.operandLeft.getPriorityLeft()) < Math.abs(this.getPriority())
+        )
+                + " " + this.operatorString + " "
+                + StringWrapper.wrapIf(
+                this.operandRight.toMiniString(),
+                "(", ")",
+                this.getPriority() > 0
+                        ? Math.abs(this.operandRight.getPriorityRight()) < Math.abs(this.getPriority())
+                        : Math.abs(this.operandRight.getPriorityRight()) <= Math.abs(this.getPriority())
+        );
     }
 
     @Override

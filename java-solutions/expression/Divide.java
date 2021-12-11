@@ -6,32 +6,22 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class Divide extends BinaryOperatorExpression {
-    public Divide(Expression left, Expression right) {
+    public Divide(PrioritizedExpression left, PrioritizedExpression right) {
         super(left, right, (a, b) -> a.divide(b, RoundingMode.DOWN), "/");
     }
 
     @Override
-    public BigDecimal evaluate(BigDecimal x) {
-        return ((BigDecimalExpression) this.operandLeft).evaluate(x)
-                .divide(((BigDecimalExpression) this.operandRight).evaluate(x));
+    public int getPriority() {
+        return -20;
     }
 
     @Override
-    public String toMiniString() {
-        return StringWrapper.wrapIf(
-                        this.operandLeft.toMiniString(),
-                        "(", ")",
-                        this.operandLeft instanceof Add
-                                || this.operandLeft instanceof Subtract
-        )
-                + " / "
-                + StringWrapper.wrapIf(
-                        this.operandRight.toMiniString(),
-                        "(", ")",
-                        this.operandRight instanceof Add
-                                || this.operandRight instanceof Subtract
-                                || this.operandRight instanceof Multiply
-                                || this.operandRight instanceof Divide
-        );
+    public int getPriorityRight() {
+        return this.getPriority() + 1;
+    }
+
+    @Override
+    public BigDecimal evaluate(BigDecimal x) {
+        return this.operandLeft.evaluate(x).divide(this.operandRight.evaluate(x));
     }
 }

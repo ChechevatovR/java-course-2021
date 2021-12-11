@@ -1,21 +1,12 @@
 package expression;
 
-import util.StringWrapper;
-
 public class Subtract extends BinaryOperatorExpression {
-    public Subtract(Expression left, Expression right) {
+    public Subtract(PrioritizedExpression left, PrioritizedExpression right) {
         super(left, right, (a, b) -> a.subtract(b), "-");
     }
-    
+
     @Override
-    public String toMiniString() {
-        return this.operandLeft.toMiniString()
-                + " - "
-                + StringWrapper.wrapIf(
-                        this.operandRight.toMiniString(),
-                        "(", ")",
-                        this.operandRight instanceof Subtract
-                            || this.operandRight instanceof Add
-                );
+    public int getPriority() {
+        return -10;
     }
 }

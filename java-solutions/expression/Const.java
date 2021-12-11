@@ -2,7 +2,7 @@ package expression;
 
 import java.math.BigDecimal;
 
-public class Const implements Expression, TripleExpression, BigDecimalExpression {
+public class Const implements PrioritizedExpression {
     private BigDecimal value;
 
     public Const(BigDecimal value) {
@@ -11,6 +11,11 @@ public class Const implements Expression, TripleExpression, BigDecimalExpression
 
     public Const(int value) {
         this.value = new BigDecimal(value);
+    }
+
+    @Override
+    public int getPriority() {
+        return Integer.MAX_VALUE;
     }
 
     public Const negate() {

@@ -1,22 +1,23 @@
 package expression;
 
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.Set;
 
-public class Variable implements Expression, BigDecimalExpression, TripleExpression {
-    static Map<String, Integer> VAR_NAME_NUMBERS = Map.of(
-            "x", 0,
-            "y", 1,
-            "z", 2
-    );
+public class Variable implements PrioritizedExpression {
+    private static final Set<String> VAR_NAME_NUMBERS = Set.of("x", "y", "z");
 
-    final String name;
+    private final String name;
 
     public Variable(String name) {
         this.name = name;
-        if (!VAR_NAME_NUMBERS.containsKey(name)) {
+        if (!VAR_NAME_NUMBERS.contains(name)) {
             throw new AssertionError("Variable has invalid name");
         }
+    }
+
+    @Override
+    public int getPriority() {
+        return Integer.MAX_VALUE;
     }
 
     @Override
@@ -31,15 +32,16 @@ public class Variable implements Expression, BigDecimalExpression, TripleExpress
 
     @Override
     public int evaluate(int x, int y, int z) {
-        switch (name) {
+        switch (this.name) {
             case "x":
                 return x;
             case "y":
                 return y;
             case "z":
                 return z;
+            default:
+                throw new AssertionError("Variable got an invalid name on evaluation time");
         }
-        return x; // Must not happen
     }
 
     @Override

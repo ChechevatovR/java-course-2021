@@ -1,14 +1,12 @@
 package expression;
 
 public class Add extends BinaryOperatorExpression {
-    public Add(Expression left, Expression right) {
+    public Add(PrioritizedExpression left, PrioritizedExpression right) {
         super(left, right, (a, b) -> a.add(b), "+");
     }
-    
+
     @Override
-    public String toMiniString() {
-        return this.operandLeft.toMiniString()
-            + " + "
-            + this.operandRight.toMiniString();
+    public int getPriority() {
+        return 10;
     }
 }
