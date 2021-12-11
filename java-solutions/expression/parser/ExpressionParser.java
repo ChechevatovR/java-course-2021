@@ -7,10 +7,6 @@ public class ExpressionParser extends BaseParser implements Parser {
         super();
     }
 
-    public ExpressionParser(CharSource source) {
-        super(source);
-    }
-
     private static TripleExpression negator(TripleExpression expression, boolean condition) {
         if (condition) {
             return new UnaryMinus((PrioritizedExpression) expression);
@@ -23,8 +19,7 @@ public class ExpressionParser extends BaseParser implements Parser {
     public TripleExpression parse(String expression) {
         this.source = new StringSource(expression);
         this.take();
-        TripleExpression result =  this.parseExpression();
-        return result;
+        return this.parseExpression();
     }
 
     private TripleExpression parseExpression() {

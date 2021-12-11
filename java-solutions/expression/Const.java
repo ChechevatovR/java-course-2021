@@ -3,7 +3,7 @@ package expression;
 import java.math.BigDecimal;
 
 public class Const implements PrioritizedExpression {
-    private BigDecimal value;
+    private final BigDecimal value;
 
     public Const(BigDecimal value) {
         this.value = value;
@@ -16,10 +16,6 @@ public class Const implements PrioritizedExpression {
     @Override
     public int getPriority() {
         return Integer.MAX_VALUE;
-    }
-
-    public Const negate() {
-        return new Const(this.value.negate());
     }
 
     @Override

@@ -1,14 +1,10 @@
 package expression;
 
+import java.math.BigDecimal;
+
 public class UnaryMinus extends UnaryOperatorExpression {
     public UnaryMinus(PrioritizedExpression operand) {
-        super(operand, a -> a.negate(), "-");
-    }
-
-    @Override
-    public String toString() {
-        return super.toString();
-
+        super(operand);
     }
 
     @Override
@@ -16,14 +12,13 @@ public class UnaryMinus extends UnaryOperatorExpression {
         return Integer.MAX_VALUE / 2;
     }
 
-    //    @Override
-//    public String toMiniString() {
-//        if (this.operand instanceof Variable
-//                || this.operand instanceof Const
-//                || this.operand instanceof UnaryOperatorExpression) {
-//            return "- " + this.operand.toMiniString();
-//        } else {
-//            return "-(" + this.operand.toMiniString() + ")";
-//        }
-//    }
+    @Override
+    protected UnaryOperator getOperator() {
+        return BigDecimal::negate;
+    }
+
+    @Override
+    protected String getOperatorString() {
+        return "-";
+    }
 }

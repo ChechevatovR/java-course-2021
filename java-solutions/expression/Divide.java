@@ -1,13 +1,11 @@
 package expression;
 
-import util.StringWrapper;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class Divide extends BinaryOperatorExpression {
     public Divide(PrioritizedExpression left, PrioritizedExpression right) {
-        super(left, right, (a, b) -> a.divide(b, RoundingMode.DOWN), "/");
+        super(left, right);
     }
 
     @Override
@@ -23,5 +21,15 @@ public class Divide extends BinaryOperatorExpression {
     @Override
     public BigDecimal evaluate(BigDecimal x) {
         return this.operandLeft.evaluate(x).divide(this.operandRight.evaluate(x));
+    }
+
+    @Override
+    protected BinaryOperator getOperator() {
+        return (a, b) -> a.divide(b, RoundingMode.DOWN);
+    }
+
+    @Override
+    protected String getOperatorString() {
+        return "/";
     }
 }

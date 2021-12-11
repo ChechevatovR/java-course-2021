@@ -1,17 +1,12 @@
 package expression.parser;
 
 class StringSource implements CharSource {
-    String string;
-    int pos;
+    private final String string;
+    private int pos;
 
     public StringSource(String string) {
         this.string = string;
         this.pos = 0;
-    }
-
-    @Override
-    public char cur() {
-        return this.string.charAt(this.pos);
     }
 
     @Override

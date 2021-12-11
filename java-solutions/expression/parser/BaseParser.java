@@ -5,8 +5,7 @@ class BaseParser {
     protected CharSource source;
     protected char ch;
 
-    public BaseParser() {
-    }
+    public BaseParser() {}
 
     public BaseParser(CharSource source) {
         this.source = source;
