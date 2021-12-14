@@ -19,7 +19,9 @@ public class ExpressionParser extends BaseParser implements Parser {
     public PrioritizedExpression parse(String expression) {
         this.source = new StringSource(expression);
         this.take();
-        return this.parseExpression();
+        PrioritizedExpression result = this.parseExpression();
+        expect(EOF);
+        return result;
     }
 
     private PrioritizedExpression parseExpression() {
