@@ -4,8 +4,8 @@ import util.StringWrapper;
 import java.math.BigDecimal;
 
 public abstract class BinaryOperatorExpression implements PrioritizedExpression {
-    protected final PrioritizedExpression operandLeft;
-    protected final PrioritizedExpression operandRight;
+    private final PrioritizedExpression operandLeft;
+    private final PrioritizedExpression operandRight;
 
     protected abstract int apply(int left, int right);
 
@@ -49,18 +49,18 @@ public abstract class BinaryOperatorExpression implements PrioritizedExpression 
 
     @Override
     public String toMiniString() {
-        return StringWrapper.wrapIf(
-                this.operandLeft.toMiniString(),
-                "(", ")",
-                Math.abs(this.operandLeft.getPriorityLeft()) < Math.abs(this.getPriority())
-        )
+        final int priority = getPriority();
+        final int right = operandRight.getPriorityRight();
+        return toMinistring(operandLeft, Math.abs(operandLeft.getPriorityLeft()) < Math.abs(priority))
                 + " " + this.getOperatorString() + " "
-                + StringWrapper.wrapIf(
-                        this.operandRight.toMiniString(),
-                        "(", ")",
-                        this.getPriority() > 0
-                                ? Math.abs(this.operandRight.getPriorityRight()) < Math.abs(this.getPriority())
-                                : Math.abs(this.operandRight.getPriorityRight()) <= Math.abs(this.getPriority())
+                + toMinistring(operandRight, Math.abs(right) < Math.abs(priority) + (getPriority() > 0 ? 0 : 1));
+    }
+
+    private String toMinistring(final PrioritizedExpression operand, final boolean condition) {
+        return StringWrapper.wrapIf(
+                operand.toMiniString(),
+                "(", ")",
+                condition
         );
     }
 

@@ -40,6 +40,7 @@ public abstract class UnaryOperatorExpression implements PrioritizedExpression {
     @Override
     public String toMiniString() {
         return this.getOperatorString()
+                // :NOTE: instanceof
                 + (this.operand instanceof BinaryOperatorExpression ? "" : " ")
                 + StringWrapper.wrapIf(
                     this.operand.toMiniString(),
