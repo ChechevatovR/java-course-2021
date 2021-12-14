@@ -13,8 +13,13 @@ public class UnaryMinus extends UnaryOperatorExpression {
     }
 
     @Override
-    protected UnaryOperator getOperator() {
-        return BigDecimal::negate;
+    protected int apply(int operand) {
+        return -operand;
+    }
+
+    @Override
+    protected BigDecimal apply(BigDecimal operand) {
+        return operand.negate();
     }
 
     @Override

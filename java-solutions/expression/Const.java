@@ -3,7 +3,7 @@ package expression;
 import java.math.BigDecimal;
 
 public class Const implements PrioritizedExpression {
-    private final BigDecimal value;
+    private final Number value;
 
     public Const(BigDecimal value) {
         this.value = value;
@@ -20,7 +20,7 @@ public class Const implements PrioritizedExpression {
 
     @Override
     public BigDecimal evaluate(BigDecimal x) {
-        return this.value;
+        return (BigDecimal) this.value;
     }
 
     @Override

@@ -19,13 +19,13 @@ public class Divide extends BinaryOperatorExpression {
     }
 
     @Override
-    public BigDecimal evaluate(BigDecimal x) {
-        return this.operandLeft.evaluate(x).divide(this.operandRight.evaluate(x));
+    protected int apply(int left, int right) {
+        return left / right;
     }
 
     @Override
-    protected BinaryOperator getOperator() {
-        return (a, b) -> a.divide(b, RoundingMode.DOWN);
+    protected BigDecimal apply(BigDecimal left, BigDecimal right) {
+        return left.divide(right);
     }
 
     @Override

@@ -13,8 +13,13 @@ public class CountTrailingZeroes extends UnaryOperatorExpression {
     }
 
     @Override
-    protected UnaryOperator getOperator() {
-        return a -> new BigDecimal(Integer.numberOfTrailingZeros(a.intValue()));
+    protected int apply(int operand) {
+        return Integer.numberOfTrailingZeros(operand);
+    }
+
+    @Override
+    protected BigDecimal apply(BigDecimal operand) {
+        return new BigDecimal(Integer.numberOfTrailingZeros(operand.intValue()));
     }
 
     @Override

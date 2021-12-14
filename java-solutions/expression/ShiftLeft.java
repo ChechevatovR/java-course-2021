@@ -18,8 +18,13 @@ public class ShiftLeft extends BinaryOperatorExpression {
     }
 
     @Override
-    protected BinaryOperator getOperator() {
-        return (a, b) -> new BigDecimal(a.intValue() << b.intValue());
+    protected int apply(int left, int right) {
+        return left << right;
+    }
+
+    @Override
+    protected BigDecimal apply(BigDecimal left, BigDecimal right) {
+        return new BigDecimal(left.intValue() << right.intValue());
     }
 
     @Override

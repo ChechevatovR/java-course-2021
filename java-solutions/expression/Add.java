@@ -13,8 +13,13 @@ public class Add extends BinaryOperatorExpression {
     }
 
     @Override
-    protected BinaryOperator getOperator() {
-        return BigDecimal::add;
+    protected int apply(int left, int right) {
+        return left + right;
+    }
+
+    @Override
+    protected BigDecimal apply(BigDecimal left, BigDecimal right) {
+        return left.add(right);
     }
 
     @Override

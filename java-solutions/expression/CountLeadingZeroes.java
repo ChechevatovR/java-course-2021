@@ -13,8 +13,13 @@ public class CountLeadingZeroes extends UnaryOperatorExpression {
     }
 
     @Override
-    protected UnaryOperator getOperator() {
-        return a -> new BigDecimal(Integer.numberOfLeadingZeros(a.intValue()));
+    protected int apply(int operand) {
+        return Integer.numberOfLeadingZeros(operand);
+    }
+
+    @Override
+    protected BigDecimal apply(BigDecimal operand) {
+        return new BigDecimal(Integer.numberOfLeadingZeros(operand.intValue()));
     }
 
     @Override

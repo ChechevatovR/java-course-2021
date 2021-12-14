@@ -7,7 +7,9 @@ import java.math.BigDecimal;
 public abstract class UnaryOperatorExpression implements PrioritizedExpression {
     final PrioritizedExpression operand;
 
-    protected abstract UnaryOperator getOperator();
+    protected abstract int apply(int operand);
+
+    protected abstract BigDecimal apply(BigDecimal operand);
 
     protected abstract String getOperatorString();
 
@@ -17,21 +19,17 @@ public abstract class UnaryOperatorExpression implements PrioritizedExpression {
 
     @Override
     public BigDecimal evaluate(BigDecimal x) {
-        return this.getOperator().apply(this.operand.evaluate(x));
+        return this.apply(this.operand.evaluate(x));
     }
 
     @Override
     public int evaluate(int x, int y, int z) {
-        return this.getOperator().apply(
-                new BigDecimal(this.operand.evaluate(x, y, z))
-        ).intValue();
+        return this.apply(this.operand.evaluate(x, y, z));
     }
 
     @Override
     public int evaluate(int x) {
-        return this.getOperator().apply(
-                new BigDecimal(this.operand.evaluate(x))
-        ).intValue();
+        return this.apply(this.operand.evaluate(x));
     }
 
     @Override
