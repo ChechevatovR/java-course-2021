@@ -1,6 +1,6 @@
 package expression.parser;
 
-class StringSource implements CharSource {
+public class StringSource implements CharSource {
     private final String string;
     private int pos;
 

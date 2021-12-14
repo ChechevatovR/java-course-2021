@@ -1,6 +1,6 @@
 package expression.parser;
 
-class BaseParser {
+public class BaseParser {
     protected final static char EOF = 0;
     protected CharSource source;
     protected char ch;
