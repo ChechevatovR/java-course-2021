@@ -14,8 +14,13 @@ public class Multiply extends BinaryOperatorExpression {
 
 
     @Override
-    protected BinaryOperator getOperator() {
-        return BigDecimal::multiply;
+    protected int apply(int left, int right) {
+        return left * right;
+    }
+
+    @Override
+    protected BigDecimal apply(BigDecimal left, BigDecimal right) {
+        return left.multiply(right);
     }
 
     @Override

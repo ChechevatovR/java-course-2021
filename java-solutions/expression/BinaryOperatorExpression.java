@@ -7,7 +7,9 @@ public abstract class BinaryOperatorExpression implements PrioritizedExpression 
     protected final PrioritizedExpression operandLeft;
     protected final PrioritizedExpression operandRight;
 
-    protected abstract BinaryOperator getOperator();
+    protected abstract int apply(int left, int right);
+
+    protected abstract BigDecimal apply(BigDecimal left, BigDecimal right);
 
     protected abstract String getOperatorString();
 
@@ -18,26 +20,26 @@ public abstract class BinaryOperatorExpression implements PrioritizedExpression 
 
     @Override
     public BigDecimal evaluate(BigDecimal x) {
-        return this.getOperator().apply(
-            this.operandLeft.evaluate(x),
-            this.operandRight.evaluate(x)
+        return this.apply(
+                this.operandLeft.evaluate(x),
+                this.operandRight.evaluate(x)
         );
     }
 
     @Override
     public int evaluate(int x, int y, int z) {
-        return this.getOperator().apply(
-                new BigDecimal(this.operandLeft.evaluate(x, y, z)),
-                new BigDecimal(this.operandRight.evaluate(x, y, z))
-        ).intValue();
+        return this.apply(
+                this.operandLeft.evaluate(x, y, z),
+                this.operandRight.evaluate(x, y, z)
+        );
     }
 
     @Override
     public int evaluate(int x) {
-        return this.getOperator().apply(
-                new BigDecimal(this.operandLeft.evaluate(x)),
-                new BigDecimal(this.operandRight.evaluate(x))
-        ).intValue();
+        return this.apply(
+                this.operandLeft.evaluate(x),
+                this.operandRight.evaluate(x)
+        );
     }
 
     @Override

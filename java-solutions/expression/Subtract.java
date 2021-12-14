@@ -14,8 +14,13 @@ public class Subtract extends BinaryOperatorExpression {
 
 
     @Override
-    protected BinaryOperator getOperator() {
-        return BigDecimal::subtract;
+    protected int apply(int left, int right) {
+        return left - right;
+    }
+
+    @Override
+    protected BigDecimal apply(BigDecimal left, BigDecimal right) {
+        return left.subtract(right);
     }
 
     @Override
