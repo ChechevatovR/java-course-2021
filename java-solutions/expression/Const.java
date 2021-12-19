@@ -10,7 +10,7 @@ public class Const implements PrioritizedExpression {
     }
 
     public Const(int value) {
-        this.value = new BigDecimal(value);
+        this.value = value;
     }
 
     @Override
