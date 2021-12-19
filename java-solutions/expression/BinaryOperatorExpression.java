@@ -50,10 +50,10 @@ public abstract class BinaryOperatorExpression implements PrioritizedExpression 
     @Override
     public String toMiniString() {
         final int thisPriority = getPriority();
-        final int rightPriority = operandRight.getPriorityRight();
-        return wrapOperand(operandLeft, Math.abs(operandLeft.getPriorityLeft()) < Math.abs(thisPriority))
+        final int rightPriority = this.operandRight.getPriorityRight();
+        return wrapOperand(this.operandLeft, Math.abs(this.operandLeft.getPriorityLeft()) < Math.abs(thisPriority))
                 + " " + this.getOperatorString() + " "
-                + wrapOperand(operandRight, Math.abs(rightPriority) < Math.abs(thisPriority) + (getPriority() > 0 ? 0 : 1));
+                + wrapOperand(this.operandRight, Math.abs(rightPriority) < Math.abs(thisPriority) + (thisPriority > 0 ? 0 : 1));
     }
 
     private static String wrapOperand(final PrioritizedExpression operand, final boolean condition) {
