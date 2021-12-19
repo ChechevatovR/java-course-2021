@@ -39,14 +39,11 @@ public abstract class UnaryOperatorExpression implements PrioritizedExpression {
 
     @Override
     public String toMiniString() {
-        return this.getOperatorString()
-                // :NOTE: instanceof
-                + (this.operand instanceof BinaryOperatorExpression ? "" : " ")
-                + StringWrapper.wrapIf(
-                    this.operand.toMiniString(),
-                    "(", ")",
-                    this.getPriority() > this.operand.getPriority()
-        );
+        if (this.operand.getPriority() < this.getPriority()) {
+            return this.getOperatorString() + StringWrapper.wrap(this.operand.toMiniString(), "(", ")");
+        } else {
+            return this.getOperatorString() + " " + this.operand.toMiniString();
+        }
     }
 
     @Override

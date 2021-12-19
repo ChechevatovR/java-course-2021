@@ -49,19 +49,15 @@ public abstract class BinaryOperatorExpression implements PrioritizedExpression 
 
     @Override
     public String toMiniString() {
-        final int priority = getPriority();
-        final int right = operandRight.getPriorityRight();
-        return toMinistring(operandLeft, Math.abs(operandLeft.getPriorityLeft()) < Math.abs(priority))
+        final int thisPriority = getPriority();
+        final int rightPriority = operandRight.getPriorityRight();
+        return wrapOperand(operandLeft, Math.abs(operandLeft.getPriorityLeft()) < Math.abs(thisPriority))
                 + " " + this.getOperatorString() + " "
-                + toMinistring(operandRight, Math.abs(right) < Math.abs(priority) + (getPriority() > 0 ? 0 : 1));
+                + wrapOperand(operandRight, Math.abs(rightPriority) < Math.abs(thisPriority) + (getPriority() > 0 ? 0 : 1));
     }
 
-    private String toMinistring(final PrioritizedExpression operand, final boolean condition) {
-        return StringWrapper.wrapIf(
-                operand.toMiniString(),
-                "(", ")",
-                condition
-        );
+    private static String wrapOperand(final PrioritizedExpression operand, final boolean condition) {
+        return StringWrapper.wrapIf(operand.toMiniString(), "(", ")", condition);
     }
 
     @Override
