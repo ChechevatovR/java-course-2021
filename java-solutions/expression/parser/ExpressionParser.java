@@ -31,16 +31,18 @@ public class ExpressionParser extends BaseParser implements Parser {
     private PrioritizedExpression parseShift() {
         PrioritizedExpression result = this.parseAddition();
         this.skipWhitespaces();
-        if (this.take('<')) {
-            this.expect('<');
-            return new ShiftLeft(result, this.parseAddition());
-        }
-        else if (this.take('>')) {
-            this.expect('>');
-            if (!this.take('>')) {
-                return new ShiftRightArifm(result, this.parseAddition());
+        while (this.test('<') || this.test('>')) {
+            if (this.take('<')) {
+                this.expect('<');
+                result = new ShiftLeft(result, this.parseAddition());
+            } else if (this.take('>')) {
+                this.expect('>');
+                if (!this.take('>')) {
+                    result = new ShiftRightArifm(result, this.parseAddition());
+                } else {
+                    result = new ShiftRight(result, this.parseAddition());
+                }
             }
-            return new ShiftRight(result, this.parseAddition());
         }
         return result;
     }
@@ -60,13 +62,13 @@ public class ExpressionParser extends BaseParser implements Parser {
     }
 
     private PrioritizedExpression parseMultiplication() {
-        PrioritizedExpression result = this.parseUnary(false);
+        PrioritizedExpression result = this.parseUnary();
         this.skipWhitespaces();
         while (this.test('*') || this.test('/')) {
             if (this.take('*')) {
-                result = new Multiply(result, this.parseUnary(false));
+                result = new Multiply(result, this.parseUnary());
             } else if (this.take('/')) {
-                result = new Divide(result, this.parseUnary(false));
+                result = new Divide(result, this.parseUnary());
             }
             this.skipWhitespaces();
         }
@@ -79,21 +81,24 @@ public class ExpressionParser extends BaseParser implements Parser {
         return result;
     }
 
-    private PrioritizedExpression parseUnary(boolean isNegated) {
+    private PrioritizedExpression parseUnary() {
         this.skipWhitespaces();
         if (this.take('-')) {
-            return this.parseUnary(!isNegated);
+            if (this.testBetween('0', '9')) {
+                return this.parseValue(true);
+            }
+            return new UnaryMinus(this.parseUnary());
         }
         if (this.take('l')) {
             this.expect('0');
-            return new CountLeadingZeroes(this.parseUnary(isNegated));
+            return new CountLeadingZeroes(this.parseUnary());
         }
         if (this.take('t')) {
             this.expect('0');
-            return new CountTrailingZeroes(this.parseUnary(isNegated));
+            return new CountTrailingZeroes(this.parseUnary());
         }
         else {
-            return this.parseValue(isNegated);
+            return this.parseValue(false);
         }
     }
 
