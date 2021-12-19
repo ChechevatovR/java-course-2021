@@ -13,7 +13,12 @@ public class StringSource implements CharSource {
     public char next() {
         return this.string.charAt(this.pos++);
     }
-    
+
+    @Override
+    public char revert() {
+        return this.string.charAt(--this.pos - 1);
+    }
+
     @Override
     public boolean hasNext() {
         return this.pos < this.string.length();

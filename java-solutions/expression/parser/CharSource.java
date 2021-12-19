@@ -5,5 +5,7 @@ public interface CharSource {
 
     boolean hasNext();
 
+    char revert();
+
     IllegalArgumentException error(String message);
 }

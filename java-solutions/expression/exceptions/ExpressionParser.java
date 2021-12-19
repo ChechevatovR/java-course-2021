@@ -1,8 +1,14 @@
-package expression.parser;
+package expression.exceptions;
 
-import expression.*;
+import expression.PrioritizedExpression;
+import expression.Const;
+import expression.Variable;
+import expression.parser.BaseParser;
+import expression.parser.StringSource;
 
-public class ExpressionParser extends BaseParser implements Parser {
+import java.util.InputMismatchException;
+
+public class ExpressionParser extends BaseParser implements expression.exceptions.Parser {
     public ExpressionParser() {
         super();
     }
@@ -12,7 +18,7 @@ public class ExpressionParser extends BaseParser implements Parser {
         this.source = new StringSource(expression);
         this.take();
         PrioritizedExpression result = this.parseExpression();
-        expect(EOF);
+        this.expect(EOF);
         return result;
     }
 
@@ -26,15 +32,16 @@ public class ExpressionParser extends BaseParser implements Parser {
         while (this.test('<') || this.test('>')) {
             if (this.take('<')) {
                 this.expect('<');
-                result = new ShiftLeft(result, this.parseAddition());
+                result = new CheckedShiftLeft(result, this.parseAddition());
             } else if (this.take('>')) {
                 this.expect('>');
                 if (!this.take('>')) {
-                    result = new ShiftRightArifm(result, this.parseAddition());
+                    result = new CheckedShiftRightArifm(result, this.parseAddition());
                 } else {
-                    result = new ShiftRight(result, this.parseAddition());
+                    result = new CheckedShiftRight(result, this.parseAddition());
                 }
             }
+            this.skipWhitespaces();
         }
         return result;
     }
@@ -44,9 +51,9 @@ public class ExpressionParser extends BaseParser implements Parser {
         this.skipWhitespaces();
         while (this.test('+') || this.test('-')) {
             if (this.take('+')) {
-                result = new Add(result, this.parseMultiplication());
+                result = new CheckedAdd(result, this.parseMultiplication());
             } else if (this.take('-')) {
-                result = new Subtract(result, this.parseMultiplication());
+                result = new CheckedSubtract(result, this.parseMultiplication());
             }
             this.skipWhitespaces();
         }
@@ -54,13 +61,35 @@ public class ExpressionParser extends BaseParser implements Parser {
     }
 
     private PrioritizedExpression parseMultiplication() {
+        PrioritizedExpression result = this.parsePowLog();
+        this.skipWhitespaces();
+        while (this.test('*') || this.test('/')) {
+            if (this.take('*')) {
+                result = new CheckedMultiply(result, this.parsePowLog());
+            } else if (this.take('/')) {
+                result = new CheckedDivide(result, this.parsePowLog());
+            }
+            this.skipWhitespaces();
+        }
+        return result;
+    }
+
+    private PrioritizedExpression parsePowLog() {
         PrioritizedExpression result = this.parseUnary();
         this.skipWhitespaces();
         while (this.test('*') || this.test('/')) {
             if (this.take('*')) {
-                result = new Multiply(result, this.parseUnary());
+                if (!this.take('*')) {
+                    this.revert();
+                    return result;
+                }
+                result = new CheckedPow(result, this.parseUnary());
             } else if (this.take('/')) {
-                result = new Divide(result, this.parseUnary());
+                if (!this.take('/')) {
+                    this.revert();
+                    return result;
+                }
+                result = new CheckedLog(result, this.parseUnary());
             }
             this.skipWhitespaces();
         }
@@ -79,17 +108,23 @@ public class ExpressionParser extends BaseParser implements Parser {
             if (this.testBetween('0', '9')) {
                 return this.parseValue(true);
             }
-            return new UnaryMinus(this.parseUnary());
-        }
-        if (this.take('l')) {
-            this.expect('0');
-            return new CountLeadingZeroes(this.parseUnary());
-        }
-        if (this.take('t')) {
-            this.expect('0');
-            return new CountTrailingZeroes(this.parseUnary());
-        }
-        else {
+            return new CheckedNegate(this.parseUnary());
+        } else if (this.take('a')) {
+            this.expect("bs");
+//            if (!skipped) {
+//                throw this.source.error("Expected whitespace before abs, not found any");
+//            }
+            boolean skipped = this.skipWhitespaces();
+            if (this.take('(')) {
+                return new CheckedAbs(this.parseBraces());
+            } else {
+                if (!skipped) {
+                    throw this.source.error("Expected whitespace after abs, not found any");
+                }
+                return new CheckedAbs(this.parseUnary());
+            }
+
+        } else {
             return this.parseValue(false);
         }
     }
@@ -111,9 +146,12 @@ public class ExpressionParser extends BaseParser implements Parser {
         }
     }
 
-    private void skipWhitespaces() {
+    private boolean skipWhitespaces() {
+        boolean skipped = false;
         while (Character.isWhitespace(this.ch)) {
+            skipped = true;
             this.take();
         }
+        return skipped;
     }
 }

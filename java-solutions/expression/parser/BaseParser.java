@@ -12,6 +12,10 @@ public class BaseParser {
         this.take();
     }
 
+    protected void revert() {
+        this.ch = this.source.revert();
+    }
+
     protected boolean test(char expected) {
         return this.ch == expected;
     }
