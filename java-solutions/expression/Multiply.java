@@ -9,9 +9,8 @@ public class Multiply extends BinaryOperatorExpression {
 
     @Override
     public int getPriority() {
-        return 20;
+        return 2000;
     }
-
 
     @Override
     protected int apply(int left, int right) {

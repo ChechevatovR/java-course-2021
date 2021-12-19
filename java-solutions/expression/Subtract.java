@@ -9,9 +9,8 @@ public class Subtract extends BinaryOperatorExpression {
 
     @Override
     public int getPriority() {
-        return -10;
+        return -1000;
     }
-
 
     @Override
     protected int apply(int left, int right) {

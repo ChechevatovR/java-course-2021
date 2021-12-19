@@ -9,7 +9,7 @@ public class CountLeadingZeroes extends UnaryOperatorExpression {
 
     @Override
     public int getPriority() {
-        return Integer.MAX_VALUE / 2;
+        return 1_000_000_000;
     }
 
     @Override

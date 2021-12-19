@@ -9,7 +9,7 @@ public class ShiftRight extends BinaryOperatorExpression {
 
     @Override
     public int getPriority() {
-        return 5;
+        return 500;
     }
 
     @Override

@@ -9,7 +9,7 @@ public class Add extends BinaryOperatorExpression {
 
     @Override
     public int getPriority() {
-        return 10;
+        return 1000;
     }
 
     @Override

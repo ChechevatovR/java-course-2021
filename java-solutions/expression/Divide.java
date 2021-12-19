@@ -1,7 +1,6 @@
 package expression;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 public class Divide extends BinaryOperatorExpression {
     public Divide(PrioritizedExpression left, PrioritizedExpression right) {
@@ -10,7 +9,7 @@ public class Divide extends BinaryOperatorExpression {
 
     @Override
     public int getPriority() {
-        return -20;
+        return -2000;
     }
 
     @Override
