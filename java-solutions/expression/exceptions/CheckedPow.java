@@ -26,17 +26,19 @@ public class CheckedPow extends CheckedBinaryOperatorExpression {
     public ExpressionEvaluationException check(int left, int right) {
         if (left == 0 && right == 0) {
             return new FunctionDomainException();
-        } if (right < 0) {
+        } else if (right < 0) {
             return new UnderflowException();
         }
         int res = 1;
         while (right > 0) {
-            ExpressionEvaluationException e = CheckedMultiply.checkStatic(res, left);
-            if (e != null) {
-                return e;
+            if (right % 2 == 0) {
+                left = checkedMultiply(left, left);
+                right /= 2;
             }
-            res *= left;
-            right--;
+            else {
+                res = checkedMultiply(res, left);
+                right--;
+            }
         }
         return null;
     }
@@ -57,19 +59,11 @@ public class CheckedPow extends CheckedBinaryOperatorExpression {
         return res;
     }
 
-    private static int checkMultiply(int left, int right) {
+    private static int checkedMultiply(int left, int right) {
         ExpressionEvaluationException e = CheckedMultiply.checkStatic(left, right);
         if (e != null) {
             throw e;
         }
         return left * right;
-    }
-
-    private static int checkNegate(int operand) {
-        ExpressionEvaluationException e = CheckedNegate.checkStatic(operand);
-        if (e != null) {
-            throw e;
-        }
-        return -operand;
     }
 }
