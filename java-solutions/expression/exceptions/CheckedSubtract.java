@@ -28,7 +28,7 @@ public class CheckedSubtract extends CheckedBinaryOperatorExpression {
     }
 
     @Override
-    public int apply(int left, int right) {
+    protected int apply(int left, int right) {
         return left - right;
     }
 }

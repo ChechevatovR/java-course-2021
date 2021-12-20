@@ -26,7 +26,7 @@ public class CheckedAbs extends CheckedUnaryOperatorExpression {
     }
 
     @Override
-    public int apply(int operand) {
+    protected int apply(int operand) {
         if (operand < 0) {
             return -operand;
         } else {

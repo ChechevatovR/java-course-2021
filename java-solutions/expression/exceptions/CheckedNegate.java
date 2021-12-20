@@ -30,7 +30,7 @@ public class CheckedNegate extends CheckedUnaryOperatorExpression {
     }
 
     @Override
-    public int apply(int operand) {
+    protected int apply(int operand) {
         return -operand;
     }
 }

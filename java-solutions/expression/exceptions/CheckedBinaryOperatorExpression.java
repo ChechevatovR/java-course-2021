@@ -9,15 +9,23 @@ public abstract class CheckedBinaryOperatorExpression implements PrioritizedExpr
     protected final PrioritizedExpression operandLeft;
     protected final PrioritizedExpression operandRight;
 
-    protected abstract int apply(int left, int right);
-
-    protected abstract String getOperatorString();
-
-    protected abstract ExpressionEvaluationException check(int left, int right);
-
     public CheckedBinaryOperatorExpression(PrioritizedExpression left, PrioritizedExpression right) {
         this.operandLeft = left;
         this.operandRight = right;
+    }
+
+    protected abstract int apply(int left, int right);
+
+    protected abstract ExpressionEvaluationException check(int left, int right);
+
+    protected abstract String getOperatorString();
+
+    public int checkedApply(int left, int right) throws ExpressionEvaluationException {
+        ExpressionEvaluationException e = this.check(left, right);
+        if (e != null) {
+            throw e;
+        }
+        return this.apply(left, right);
     }
 
     @Override
@@ -25,23 +33,14 @@ public abstract class CheckedBinaryOperatorExpression implements PrioritizedExpr
         throw new UnsupportedOperationException("Only checked integer operations are available");
     }
 
-    private int checkedEvaluate(int left, int right) {
-        ExpressionEvaluationException exception = this.check(left, right);
-        if (exception == null) {
-            return this.apply(left, right);
-        } else {
-            throw exception;
-        }
-    }
-
     @Override
     public int evaluate(int x, int y, int z) {
-        return this.checkedEvaluate(this.operandLeft.evaluate(x, y, z), this.operandRight.evaluate(x, y, z));
+        return this.checkedApply(this.operandLeft.evaluate(x, y, z), this.operandRight.evaluate(x, y, z));
     }
 
     @Override
     public int evaluate(int x) {
-        return this.checkedEvaluate(this.operandLeft.evaluate(x), this.operandRight.evaluate(x));
+        return this.checkedApply(this.operandLeft.evaluate(x), this.operandRight.evaluate(x));
     }
 
     @Override

@@ -8,14 +8,22 @@ import java.math.BigDecimal;
 public abstract class CheckedUnaryOperatorExpression implements PrioritizedExpression {
     final PrioritizedExpression operand;
 
+    public CheckedUnaryOperatorExpression(PrioritizedExpression operand) {
+        this.operand = operand;
+    }
+
     protected abstract String getOperatorString();
 
     protected abstract int apply(int operand);
 
     protected abstract ExpressionEvaluationException check(int operand);
 
-    public CheckedUnaryOperatorExpression(PrioritizedExpression operand) {
-        this.operand = operand;
+    public int checkedApply(int operand) throws ExpressionEvaluationException {
+        ExpressionEvaluationException e = this.check(operand);
+        if (e != null) {
+            throw e;
+        }
+        return this.apply(operand);
     }
 
     @Override
@@ -23,23 +31,14 @@ public abstract class CheckedUnaryOperatorExpression implements PrioritizedExpre
         throw new UnsupportedOperationException("Only checked integer operations are available");
     }
 
-    private int checkedEvaluate(int operand) {
-        ExpressionEvaluationException exception = this.check(operand);
-        if (exception == null) {
-            return this.apply(operand);
-        } else {
-            throw exception;
-        }
-    }
-
     @Override
     public int evaluate(int x, int y, int z) {
-        return this.checkedEvaluate(this.operand.evaluate(x, y, z));
+        return this.checkedApply(this.operand.evaluate(x, y, z));
     }
 
     @Override
     public int evaluate(int x) {
-        return this.checkedEvaluate(this.operand.evaluate(x));
+        return this.checkedApply(this.operand.evaluate(x));
     }
 
     @Override

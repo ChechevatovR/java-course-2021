@@ -42,15 +42,15 @@ public class CheckedPow extends CheckedBinaryOperatorExpression {
     }
 
     @Override
-    public int apply(int left, int right) {
+    protected int apply(int left, int right) {
         int res = 1;
         while (right > 0) {
             if (right % 2 == 0) {
-                left = checkMultiply(left, left);
+                left *= left;
                 right /= 2;
             }
             else {
-                res = checkMultiply(res, left);
+                res *= left;
                 right--;
             }
         }

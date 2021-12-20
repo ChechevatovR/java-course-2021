@@ -33,7 +33,7 @@ public class CheckedLog extends CheckedBinaryOperatorExpression {
     }
 
     @Override
-    public int apply(int left, int right) {
+    protected int apply(int left, int right) {
         int res = 0;
         while (left >= right) {
             left /= right;
