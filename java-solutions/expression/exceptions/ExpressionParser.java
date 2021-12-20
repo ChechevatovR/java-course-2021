@@ -6,8 +6,6 @@ import expression.Variable;
 import expression.parser.BaseParser;
 import expression.parser.StringSource;
 
-import java.util.InputMismatchException;
-
 public class ExpressionParser extends BaseParser implements expression.exceptions.Parser {
     public ExpressionParser() {
         super();
@@ -106,14 +104,12 @@ public class ExpressionParser extends BaseParser implements expression.exception
         this.skipWhitespaces();
         if (this.take('-')) {
             if (this.testBetween('0', '9')) {
-                return this.parseValue(true);
+                this.revert();
+                return this.parseValue();
             }
             return new CheckedNegate(this.parseUnary());
         } else if (this.take('a')) {
             this.expect("bs");
-//            if (!skipped) {
-//                throw this.source.error("Expected whitespace before abs, not found any");
-//            }
             boolean skipped = this.skipWhitespaces();
             if (this.take('(')) {
                 return new CheckedAbs(this.parseBraces());
@@ -125,11 +121,11 @@ public class ExpressionParser extends BaseParser implements expression.exception
             }
 
         } else {
-            return this.parseValue(false);
+            return this.parseValue();
         }
     }
 
-    private PrioritizedExpression parseValue(boolean isNegated) {
+    private PrioritizedExpression parseValue() {
         this.skipWhitespaces();
         if (this.take('(')) {
             return this.parseBraces();
@@ -138,7 +134,7 @@ public class ExpressionParser extends BaseParser implements expression.exception
         } else if (this.test('x') || this.test('y') || this.test('z')) {
             return new Variable("" + this.take());
         } else {
-            StringBuilder sb = new StringBuilder(isNegated ? "-" : "");
+            StringBuilder sb = new StringBuilder(this.take('-') ? "-" : "");
             do {
                 sb.append(this.take());
             } while (this.testBetween('0', '9'));
