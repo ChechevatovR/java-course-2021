@@ -12,19 +12,19 @@ public class ExpressionParser extends BaseParser implements expression.exception
     }
 
     @Override
-    public PrioritizedExpression parse(String expression) {
+    public PrioritizedExpression parse(String expression) throws ExpressionParsingException {
         this.source = new StringSource(expression);
         this.take();
         PrioritizedExpression result = this.parseExpression();
-        this.expect(EOF);
+        this.expect(EOI);
         return result;
     }
 
-    private PrioritizedExpression parseExpression() {
+    private PrioritizedExpression parseExpression() throws ExpressionParsingException {
         return this.parseShift();
     }
 
-    private PrioritizedExpression parseShift() {
+    private PrioritizedExpression parseShift() throws ExpressionParsingException {
         PrioritizedExpression result = this.parseAddition();
         this.skipWhitespaces();
         while (this.test('<') || this.test('>')) {
@@ -44,7 +44,7 @@ public class ExpressionParser extends BaseParser implements expression.exception
         return result;
     }
 
-    private PrioritizedExpression parseAddition() {
+    private PrioritizedExpression parseAddition() throws ExpressionParsingException {
         PrioritizedExpression result = this.parseMultiplication();
         this.skipWhitespaces();
         while (this.test('+') || this.test('-')) {
@@ -58,7 +58,7 @@ public class ExpressionParser extends BaseParser implements expression.exception
         return result;
     }
 
-    private PrioritizedExpression parseMultiplication() {
+    private PrioritizedExpression parseMultiplication() throws ExpressionParsingException {
         PrioritizedExpression result = this.parsePowLog();
         this.skipWhitespaces();
         while (this.test('*') || this.test('/')) {
@@ -72,7 +72,7 @@ public class ExpressionParser extends BaseParser implements expression.exception
         return result;
     }
 
-    private PrioritizedExpression parsePowLog() {
+    private PrioritizedExpression parsePowLog() throws ExpressionParsingException {
         PrioritizedExpression result = this.parseUnary();
         this.skipWhitespaces();
         while (this.test('*') || this.test('/')) {
@@ -94,13 +94,13 @@ public class ExpressionParser extends BaseParser implements expression.exception
         return result;
     }
 
-    private PrioritizedExpression parseBraces() {
+    private PrioritizedExpression parseBraces() throws ExpressionParsingException {
         PrioritizedExpression result = this.parseExpression();
         this.expect(')');
         return result;
     }
 
-    private PrioritizedExpression parseUnary() {
+    private PrioritizedExpression parseUnary() throws ExpressionParsingException {
         this.skipWhitespaces();
         if (this.take('-')) {
             if (this.testBetween('0', '9')) {
@@ -115,7 +115,7 @@ public class ExpressionParser extends BaseParser implements expression.exception
                 return new CheckedAbs(this.parseBraces());
             } else {
                 if (!skipped) {
-                    throw this.source.error("Expected whitespace after abs, not found any");
+                    throw this.source.error("Whitespace", "not found any");
                 }
                 return new CheckedAbs(this.parseUnary());
             }
@@ -125,7 +125,7 @@ public class ExpressionParser extends BaseParser implements expression.exception
         }
     }
 
-    private PrioritizedExpression parseValue() {
+    private PrioritizedExpression parseValue() throws ExpressionParsingException {
         this.skipWhitespaces();
         if (this.take('(')) {
             return this.parseBraces();
@@ -138,7 +138,11 @@ public class ExpressionParser extends BaseParser implements expression.exception
             do {
                 sb.append(this.take());
             } while (this.testBetween('0', '9'));
-            return new Const(Integer.parseInt(sb.toString()));
+            try {
+                return new Const(Integer.parseInt(sb.toString()));
+            } catch (NumberFormatException e) {
+                throw this.source.error("int number", sb.toString());
+            }
         }
     }
 

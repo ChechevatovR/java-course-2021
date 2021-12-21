@@ -1,5 +1,7 @@
 package expression.parser;
 
+import expression.exceptions.ExpressionParsingException;
+
 public interface CharSource {
     char next();
 
@@ -7,5 +9,5 @@ public interface CharSource {
 
     char revert();
 
-    IllegalArgumentException error(String message);
+    ExpressionParsingException error(String expected, String got);
 }

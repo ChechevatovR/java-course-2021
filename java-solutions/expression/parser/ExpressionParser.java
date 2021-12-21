@@ -12,7 +12,7 @@ public class ExpressionParser extends BaseParser implements Parser {
         this.source = new StringSource(expression);
         this.take();
         PrioritizedExpression result = this.parseExpression();
-        expect(EOF);
+        expect(EOI);
         return result;
     }
 

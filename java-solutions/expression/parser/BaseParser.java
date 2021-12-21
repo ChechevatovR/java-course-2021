@@ -1,7 +1,7 @@
 package expression.parser;
 
 public class BaseParser {
-    protected final static char EOF = 0;
+    protected final static char EOI = 0;
     protected CharSource source;
     protected char ch;
 
@@ -10,6 +10,10 @@ public class BaseParser {
     public BaseParser(CharSource source) {
         this.source = source;
         this.take();
+    }
+
+    private static String formatChar(char c) {
+        return c != EOI ? "" + c : "[end of input]";
     }
 
     protected void revert() {
@@ -26,7 +30,7 @@ public class BaseParser {
 
     protected char take() {
         final char result = this.ch;
-        this.ch = this.source.hasNext() ? this.source.next() : EOF;
+        this.ch = this.source.hasNext() ? this.source.next() : EOI;
         return result;
     }
 
@@ -41,7 +45,7 @@ public class BaseParser {
 
     protected void expect(final char expected) {
        if (!this.take(expected)) {
-           throw this.source.error("Expected " + expected + ", found: " + (this.ch != EOF ? this.ch : "EOF"));
+           throw this.source.error(formatChar(expected), formatChar(this.ch));
        }
     }
 
@@ -54,8 +58,8 @@ public class BaseParser {
     protected void expectBetween(char left, char right) {
         if (!this.testBetween(left, right)) {
             throw this.source.error(
-                    "Expected value between " + left + " and " + right
-                    + ", but found: " + (this.ch != EOF ? this.ch : "EOF")
+                    "Value between " + formatChar(left) + " and " + formatChar(right),
+                    formatChar(this.ch)
             );
         }
         this.take();

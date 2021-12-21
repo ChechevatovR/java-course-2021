@@ -1,5 +1,8 @@
 package expression.parser;
 
+import expression.exceptions.ExpressionParsingException;
+import expression.exceptions.InvalidInputException;
+
 public class StringSource implements CharSource {
     private final String string;
     private int pos;
@@ -25,7 +28,12 @@ public class StringSource implements CharSource {
     }
 
     @Override
-    public IllegalArgumentException error(String message) {
-        return new IllegalArgumentException("Error at position " + this.pos + ":" + System.lineSeparator() + message);
+    public ExpressionParsingException error(String expected, String got) {
+        return new InvalidInputException(
+                expected,
+                got,
+                "Position " + this.pos + ": "
+                    + this.string.substring(Math.max(0, this.pos - 5), Math.min(this.string.length(), this.pos + 5))
+        );
     }
 }
