@@ -29,6 +29,7 @@ public class StringSource implements CharSource {
 
     @Override
     public ExpressionParsingException error(String expected, String got) {
+        // :NOTE: Position
         return new InvalidInputException(
                 expected,
                 got,

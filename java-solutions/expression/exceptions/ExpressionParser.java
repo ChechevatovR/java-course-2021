@@ -99,9 +99,9 @@ public class ExpressionParser extends BaseParser implements Parser {
 
     private PrioritizedExpression parseUnary() throws ExpressionParsingException {
         skipWhitespaces();
-        if (test('-')) {
+        if (take('-')) {
             if (testBetween('0', '9')) {
-                return parseConst(new StringBuilder("-"));
+                return parseConst("-");
             } else {
                 return new CheckedNegate(parseUnary());
             }
@@ -120,19 +120,22 @@ public class ExpressionParser extends BaseParser implements Parser {
         } else if (take('(')) {
             return parseBraces();
         } else if (test('x') || test('y') || test('z')) {
+            // :NOTE: Тоже идентификаторы
             return new Variable(String.valueOf(take()));
         } else {
-            return parseConst(new StringBuilder());
+            return parseConst("");
         }
     }
 
-    private Const parseConst(final StringBuilder sb) {
+    private Const parseConst(final String s) {
+        StringBuilder sb = new StringBuilder(s);
         do {
             sb.append(take());
         } while (testBetween('0', '9'));
         try {
             return new Const(Integer.parseInt(sb.toString()));
         } catch (final NumberFormatException e) {
+            // :NOTE: Все же сделать exprected expression, и вероятно не здесь
             throw source.error("int number", sb.toString());
         }
     }
