@@ -24,10 +24,8 @@ public class CheckedPow extends CheckedBinaryOperatorExpression {
 
     @Override
     public ExpressionEvaluationException check(int left, int right) {
-        if (left == 0 && right == 0) {
+        if ((left == 0 && right == 0) || right < 0) {
             return new FunctionDomainException();
-        } else if (right < 0) {
-            return new UnderflowException();
         }
         int res = 1;
         while (right > 0) {
