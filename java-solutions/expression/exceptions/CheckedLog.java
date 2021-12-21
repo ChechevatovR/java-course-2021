@@ -26,7 +26,7 @@ public class CheckedLog extends CheckedBinaryOperatorExpression {
     public ExpressionEvaluationException check(int left, int right) {
         if (left <= 0) {
             return new FunctionDomainException();
-        } if (right <= 0 || right == 1) {
+        } if (right <= 1) {
             return new LogarithmBaseException();
         }
         return null;
