@@ -3,7 +3,7 @@ package util;
 import java.util.function.Predicate;
 
 public class IsLineSeparator implements Predicate<Character> {
-    public boolean test(Character c) {
+    public boolean test(final Character c) {
         // https://en.wikipedia.org/wiki/Newline#Unicode
         return c == 0x000A // LF | Line feed
             || c == 0x000B // VT | Vertical tab

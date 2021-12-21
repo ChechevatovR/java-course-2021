@@ -3,7 +3,7 @@ package expression;
 import java.math.BigDecimal;
 
 public class UnaryMinus extends UnaryOperatorExpression {
-    public UnaryMinus(PrioritizedExpression operand) {
+    public UnaryMinus(final PrioritizedExpression operand) {
         super(operand);
     }
 
@@ -13,12 +13,12 @@ public class UnaryMinus extends UnaryOperatorExpression {
     }
 
     @Override
-    protected int apply(int operand) {
+    protected int apply(final int operand) {
         return -operand;
     }
 
     @Override
-    protected BigDecimal apply(BigDecimal operand) {
+    protected BigDecimal apply(final BigDecimal operand) {
         return operand.negate();
     }
 

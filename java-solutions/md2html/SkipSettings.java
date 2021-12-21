@@ -17,7 +17,7 @@ public class SkipSettings {
         del = false;
     }
 
-    public SkipSettings(SkipSettings copyFrom) {
+    public SkipSettings(final SkipSettings copyFrom) {
         emphasis = copyFrom.emphasis;
         strong = copyFrom.strong;
         strikeout = copyFrom.strikeout;
@@ -26,8 +26,8 @@ public class SkipSettings {
         del = copyFrom.del;
     }
 
-    SkipSettings setKey(String keyToSetTrue) {
-        SkipSettings copy = new SkipSettings(this);
+    SkipSettings setKey(final String keyToSetTrue) {
+        final SkipSettings copy = new SkipSettings(this);
         switch (keyToSetTrue) {
             case "emphasis":
                 copy.emphasis = true;

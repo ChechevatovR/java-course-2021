@@ -18,16 +18,16 @@ public class MNKBoard implements Board {
     private final int n;
     private final int k;
 
-    private int curPlayerIndex = 0;
+    private int curPlayerIndex;
     private Cell curPlayerCell = Cell.X;
-    private int turnsDone = 0;
+    private int turnsDone;
 
-    public MNKBoard(int m, int n, int k) {
+    public MNKBoard(final int m, final int n, final int k) {
         if (n <= 0 || m <= 0 || k <= 0) {
             throw new IllegalArgumentException("All MNKBoard constructor arguments must be positive integers");
         }
         field = new Cell[n][m];
-        for (Cell[] row : field) {
+        for (final Cell[] row : field) {
             Arrays.fill(row, Cell.E);
         }
         this.m = m;
@@ -37,7 +37,7 @@ public class MNKBoard implements Board {
 
     @Override
     public Cell getCurrentPlayerCell() {
-        return this.curPlayerCell;
+        return curPlayerCell;
     }
 
     @Override
@@ -47,11 +47,11 @@ public class MNKBoard implements Board {
 
     @Override
     public Position getPosition() {
-        return new MNKPosition(this.field, this.k, this.curPlayerIndex, this.curPlayerCell, this.turnsDone);
+        return new MNKPosition(field, k, curPlayerIndex, curPlayerCell, turnsDone);
     }
 
     @Override
-    public MoveResult applyMove(Move move) {
+    public MoveResult applyMove(final Move move) {
         if (move.isDrawRequest()) {
             return MoveResult.DRAW_REQUEST;
         }
@@ -59,52 +59,52 @@ public class MNKBoard implements Board {
             return MoveResult.INVALID;
         }
         field[move.getY()][move.getX()] = move.getVal();
-        this.curPlayerCell = this.curPlayerCell == Cell.X ? Cell.O : Cell.X;
-        this.curPlayerIndex = 1 - curPlayerIndex;
-        this.turnsDone++;
-        return this.checkBoard(move);
+        curPlayerCell = curPlayerCell == Cell.X ? Cell.O : Cell.X;
+        curPlayerIndex = 1 - curPlayerIndex;
+        turnsDone++;
+        return checkBoard(move);
     }
 
-    private int checkLine(MutableVector2<Integer> v, NextCellProvider next) {
-        Cell req = this.field[v.y][v.x];
+    private int checkLine(final MutableVector2<Integer> v, final NextCellProvider next) {
+        final Cell req = field[v.y][v.x];
         next.next(v);
         int res = 0;
-        while (0 <= v.y && v.y < this.n && 0 <= v.x && v.x < this.m && this.field[v.y][v.x] == req && res < this.k) {
+        while (0 <= v.y && v.y < n && 0 <= v.x && v.x < m && field[v.y][v.x] == req && res < k) {
             res++;
             next.next(v);
         }
         return res;
     }
 
-    private MoveResult checkBoard(Move lastMove) {
-        MutableVector2<Integer> pos = new MutableVector2<>(lastMove.getX(), lastMove.getY());
-        int res = Collections.max(List.of(
-                1 + this.checkLine(pos.copy(), v -> v.x++) + this.checkLine(pos.copy(), v -> v.x--),
-                1 + this.checkLine(pos.copy(), v -> v.y++) + this.checkLine(pos.copy(), v -> v.y--),
+    private MoveResult checkBoard(final Move lastMove) {
+        final MutableVector2<Integer> pos = new MutableVector2<>(lastMove.getX(), lastMove.getY());
+        final int res = Collections.max(List.of(
+                1 + checkLine(pos.copy(), v -> v.x++) + checkLine(pos.copy(), v -> v.x--),
+                1 + checkLine(pos.copy(), v -> v.y++) + checkLine(pos.copy(), v -> v.y--),
 //                1 + this.checkLine(pos.copy(), v -> {v.x++; v.y++;}) + this.checkLine(pos.copy(), v -> {v.x--; v.y--;}),
-                1 + this.checkLine(pos.copy(), v -> {v.x++; v.y--;}) + this.checkLine(pos.copy(), v -> {v.x--; v.y++;})
+                1 + checkLine(pos.copy(), v -> {v.x++; v.y--;}) + checkLine(pos.copy(), v -> {v.x--; v.y++;})
         ));
-        if (res >= this.k) {
+        if (res >= k) {
             return MoveResult.WIN;
-        } else if (this.turnsDone == m * n) {
+        } else if (turnsDone == m * n) {
             return MoveResult.DRAW;
         }
         return MoveResult.NOT_FINISHED;
     }
 
-    public boolean isValid(Move move) {
+    public boolean isValid(final Move move) {
         return move != null
-                && 0 <= move.getY() && move.getY() < this.n
-                && 0 <= move.getX() && move.getX() < this.m
+                && 0 <= move.getY() && move.getY() < n
+                && 0 <= move.getX() && move.getX() < m
                 && field[move.getY()][move.getX()] == Cell.E
-                && this.curPlayerCell == move.getVal();
+                && curPlayerCell == move.getVal();
     }
 
     @Override
-    public void log(OutputStreamWriter logger) throws IOException {
-        logger.append(this.getPosition().toHumanReadableString());
+    public void log(final OutputStreamWriter logger) throws IOException {
+        logger.append(getPosition().toHumanReadableString());
         logger.append(System.lineSeparator());
-        logger.append(String.valueOf(this.turnsDone)).append(" turns done").append(System.lineSeparator());
+        logger.append(String.valueOf(turnsDone)).append(" turns done").append(System.lineSeparator());
     }
 
 }

@@ -2,7 +2,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class ReverseSum2 {
-    public static int[] scanLine(Scanner in) {
+    public static int[] scanLine(final Scanner in) {
         int[] line = new int[2];
         int n = 0;
         while (in.hasNextInt()) {
@@ -14,8 +14,8 @@ public class ReverseSum2 {
         return Arrays.copyOf(line, n); // shrink to fit
     }
     
-    public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
+    public static void main(final String[] args) {
+        final Scanner in = new Scanner(System.in);
         int[][] numbers = new int[2][];
         int lines = 0;
         int maxWidth = 0;
@@ -29,7 +29,7 @@ public class ReverseSum2 {
             lines++;
         }
         
-        int[] columnSum = new int[maxWidth];
+        final int[] columnSum = new int[maxWidth];
         for (int i = 0; i < lines; i++) {
             int prevSum = 0;
             for (int j = 0; j < numbers[i].length; j++) {

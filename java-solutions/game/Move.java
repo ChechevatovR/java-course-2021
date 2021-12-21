@@ -6,14 +6,14 @@ public class Move {
     private final Cell val;
     private final boolean isDrawRequest;
 
-    public Move(int x, int y, Cell val, boolean isDrawRequest) {
+    public Move(final int x, final int y, final Cell val, final boolean isDrawRequest) {
         this.x = x;
         this.y = y;
         this.val = val;
         this.isDrawRequest = isDrawRequest;
     }
 
-    public Move(int x, int y, Cell val) {
+    public Move(final int x, final int y, final Cell val) {
         this(x, y, val, false);
     }
 

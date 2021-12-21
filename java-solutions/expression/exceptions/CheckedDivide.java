@@ -3,7 +3,7 @@ package expression.exceptions;
 import expression.*;
 
 public class CheckedDivide extends CheckedBinaryOperatorExpression {
-    public CheckedDivide(PrioritizedExpression left, PrioritizedExpression right) {
+    public CheckedDivide(final PrioritizedExpression left, final PrioritizedExpression right) {
         super(left, right);
     }
 
@@ -19,11 +19,11 @@ public class CheckedDivide extends CheckedBinaryOperatorExpression {
 
     @Override
     public int getPriorityRight() {
-        return this.getPriority() + 1;
+        return getPriority() + 1;
     }
 
     @Override
-    public ExpressionEvaluationException check(int left, int right) {
+    public ExpressionEvaluationException check(final int left, final int right) {
         if (right == 0) {
             return new DivisionByZeroException();
         } else if (right == -1 && left == Integer.MIN_VALUE) {
@@ -33,7 +33,7 @@ public class CheckedDivide extends CheckedBinaryOperatorExpression {
     }
 
     @Override
-    protected int apply(int left, int right) {
+    protected int apply(final int left, final int right) {
         return left / right;
     }
 }

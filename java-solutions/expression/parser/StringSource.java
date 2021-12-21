@@ -7,34 +7,34 @@ public class StringSource implements CharSource {
     private final String string;
     private int pos;
 
-    public StringSource(String string) {
+    public StringSource(final String string) {
         this.string = string;
-        this.pos = 0;
+        pos = 0;
     }
 
     @Override
     public char next() {
-        return this.string.charAt(this.pos++);
+        return string.charAt(pos++);
     }
 
     @Override
     public char revert() {
-        return this.string.charAt(--this.pos - 1);
+        return string.charAt(--pos - 1);
     }
 
     @Override
     public boolean hasNext() {
-        return this.pos < this.string.length();
+        return pos < string.length();
     }
 
     @Override
-    public ExpressionParsingException error(String expected, String got) {
+    public ExpressionParsingException error(final String expected, final String got) {
         // :NOTE: Position
         return new InvalidInputException(
                 expected,
                 got,
-                "Position " + this.pos + ": "
-                    + this.string.substring(Math.max(0, this.pos - 5), Math.min(this.string.length(), this.pos + 5))
+                "Position " + pos + ": "
+                    + string.substring(Math.max(0, pos - 5), Math.min(string.length(), pos + 5))
         );
     }
 }

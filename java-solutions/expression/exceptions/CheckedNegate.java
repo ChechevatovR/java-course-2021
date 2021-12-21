@@ -3,7 +3,7 @@ package expression.exceptions;
 import expression.*;
 
 public class CheckedNegate extends CheckedUnaryOperatorExpression {
-    public CheckedNegate(PrioritizedExpression operand) {
+    public CheckedNegate(final PrioritizedExpression operand) {
         super(operand);
     }
 
@@ -18,11 +18,11 @@ public class CheckedNegate extends CheckedUnaryOperatorExpression {
     }
 
     @Override
-    public ExpressionEvaluationException check(int operand) {
+    public ExpressionEvaluationException check(final int operand) {
         return checkStatic(operand);
     }
 
-    public static ExpressionEvaluationException checkStatic(int operand) {
+    public static ExpressionEvaluationException checkStatic(final int operand) {
         if (operand == Integer.MIN_VALUE) {
             return new OverflowException();
         }
@@ -30,7 +30,7 @@ public class CheckedNegate extends CheckedUnaryOperatorExpression {
     }
 
     @Override
-    protected int apply(int operand) {
+    protected int apply(final int operand) {
         return -operand;
     }
 }

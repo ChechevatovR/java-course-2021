@@ -3,17 +3,17 @@ package markup;
 import java.util.List;
 
 public class Strong extends AbstractWrapper implements InlineMarkup {
-    public Strong(List<InlineMarkup> children) {
+    public Strong(final List<InlineMarkup> children) {
         super(new SimpleParent(children));
     }
 
     @Override
-    public void toMarkdown(StringBuilder sb) {
-        super.toMarkdown(sb, "__", "__");
+    public void toMarkdown(final StringBuilder sb) {
+        toMarkdown(sb, "__", "__");
     }
 
     @Override
-    public void toHtml(StringBuilder sb) {
-        super.toHtml(sb, "<strong>", "</strong>");
+    public void toHtml(final StringBuilder sb) {
+        toHtml(sb, "<strong>", "</strong>");
     }
 }

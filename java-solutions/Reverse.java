@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Reverse {
-    public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        ArrayList<int[]> numbers = new ArrayList<int[]>();
+    public static void main(final String[] args) {
+        final Scanner in = new Scanner(System.in);
+        final ArrayList<int[]> numbers = new ArrayList<>();
 
         try {
             int[] line = new int[2];
             int lineLength = 0;
             while (in.hasNextInt()) {
-                int val = in.nextInt();
+                final int val = in.nextInt();
                 for (int i = 0; i < in.linesSkipped; i++) {
                     numbers.add(Arrays.copyOfRange(line, 0, lineLength));
                     line = new int[2];
@@ -30,14 +30,14 @@ public class Reverse {
                 line = new int[2];
                 lineLength = 0;
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             System.err.println("IOException happened while Scanner was scanning: " + e.getMessage());
         } finally {
             in.close();
         }
 
         for (int i = numbers.size() - 1; i >= 0; i--) {
-            int[] line = numbers.get(i);
+            final int[] line = numbers.get(i);
             for (int j = line.length - 1; j >= 0; j--) {
                 System.out.print(line[j] + " ");
             }

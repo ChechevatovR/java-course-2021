@@ -8,7 +8,7 @@ public class Variable implements PrioritizedExpression {
 
     private final String name;
 
-    public Variable(String name) {
+    public Variable(final String name) {
         this.name = name;
         if (!VAR_NAME_NUMBERS.contains(name)) {
             throw new AssertionError("Variable has invalid name");
@@ -21,18 +21,18 @@ public class Variable implements PrioritizedExpression {
     }
 
     @Override
-    public int evaluate(int x) {
+    public int evaluate(final int x) {
         return x;
     }
 
     @Override
-    public BigDecimal evaluate(BigDecimal x) {
+    public BigDecimal evaluate(final BigDecimal x) {
         return x;
     }
 
     @Override
-    public int evaluate(int x, int y, int z) {
-        switch (this.name) {
+    public int evaluate(final int x, final int y, final int z) {
+        switch (name) {
             case "x":
                 return x;
             case "y":
@@ -46,24 +46,24 @@ public class Variable implements PrioritizedExpression {
 
     @Override
     public String toString() {
-        return this.name;
+        return name;
     }
 
     @Override
     public String toMiniString() {
-        return this.name;
+        return name;
     }
 
     @Override
     public int hashCode() {
-        return this.name.hashCode();
+        return name.hashCode();
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equals(final Object other) {
         if (other instanceof Variable) {
-            Variable that = (Variable) other;
-            return this.name.equals(that.name);
+            final Variable that = (Variable) other;
+            return name.equals(that.name);
         }
         return false;
     }

@@ -6,7 +6,7 @@ public abstract class ExpressionParsingException extends RuntimeException {
         super();
     }
 
-    public ExpressionParsingException(String message) {
+    public ExpressionParsingException(final String message) {
         super(message);
     }
 }

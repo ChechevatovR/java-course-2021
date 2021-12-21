@@ -5,11 +5,11 @@ import java.math.BigDecimal;
 public class Const implements PrioritizedExpression {
     private final Number value;
 
-    public Const(BigDecimal value) {
+    public Const(final BigDecimal value) {
         this.value = value;
     }
 
-    public Const(int value) {
+    public Const(final int value) {
         this.value = value;
     }
 
@@ -19,28 +19,28 @@ public class Const implements PrioritizedExpression {
     }
 
     @Override
-    public BigDecimal evaluate(BigDecimal x) {
-        return (BigDecimal) this.value;
+    public BigDecimal evaluate(final BigDecimal x) {
+        return (BigDecimal) value;
     }
 
     @Override
-    public int evaluate(int x, int y, int z) {
-        return this.value.intValue();
+    public int evaluate(final int x, final int y, final int z) {
+        return value.intValue();
     }
 
     @Override
-    public int evaluate(int x) {
-        return this.value.intValue();
+    public int evaluate(final int x) {
+        return value.intValue();
     }
 
     @Override
     public String toString() {
-        return this.value.toString();
+        return value.toString();
     }
 
     @Override
     public String toMiniString() {
-        return this.value.toString();
+        return value.toString();
     }
 
     @Override
@@ -49,10 +49,10 @@ public class Const implements PrioritizedExpression {
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equals(final Object other) {
         if (other instanceof Const) {
-            Const that = (Const) other;
-            return this.value.equals(that.value);
+            final Const that = (Const) other;
+            return value.equals(that.value);
         }
         return false;
     }

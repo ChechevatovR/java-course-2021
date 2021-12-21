@@ -3,7 +3,7 @@ package expression.exceptions;
 import expression.*;
 
 public class CheckedMultiply extends CheckedBinaryOperatorExpression {
-    public CheckedMultiply(PrioritizedExpression left, PrioritizedExpression right) {
+    public CheckedMultiply(final PrioritizedExpression left, final PrioritizedExpression right) {
         super(left, right);
     }
 
@@ -18,11 +18,11 @@ public class CheckedMultiply extends CheckedBinaryOperatorExpression {
     }
 
     @Override
-    protected ExpressionEvaluationException check(int left, int right) {
+    protected ExpressionEvaluationException check(final int left, final int right) {
         return checkStatic(left, right);
     }
 
-    protected static ExpressionEvaluationException checkStatic(int left, int right) {
+    protected static ExpressionEvaluationException checkStatic(final int left, final int right) {
         if (right == -1) {
             return left == Integer.MIN_VALUE ? new OverflowException() : null;
         } else if (left == -1) {
@@ -31,14 +31,14 @@ public class CheckedMultiply extends CheckedBinaryOperatorExpression {
             return null;
         }
 
-        int lo = Math.min(Integer.MAX_VALUE / left, Integer.MIN_VALUE / left);
-        int hi = Math.max(Integer.MAX_VALUE / left, Integer.MIN_VALUE / left);
+        final int lo = Math.min(Integer.MAX_VALUE / left, Integer.MIN_VALUE / left);
+        final int hi = Math.max(Integer.MAX_VALUE / left, Integer.MIN_VALUE / left);
 
         return lo <= right && right <= hi ? null : new OverflowException();
     }
 
     @Override
-    protected int apply(int left, int right) {
+    protected int apply(final int left, final int right) {
         return left * right;
     }
 }

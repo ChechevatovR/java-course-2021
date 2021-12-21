@@ -1,19 +1,19 @@
 package markup;
 
 public abstract class AbstractWrapper implements MaybeSerializable {
-    protected MaybeSerializable content;
+    protected final MaybeSerializable content;
 
-    public AbstractWrapper(MaybeSerializable content) {
+    public AbstractWrapper(final MaybeSerializable content) {
         this.content = content;
     }
 
-    protected void toMarkdown(StringBuilder sb, String prefix, String suffix) {
+    protected void toMarkdown(final StringBuilder sb, final String prefix, final String suffix) {
         sb.append(prefix);
         content.toMarkdown(sb);
         sb.append(suffix);
     }
 
-    protected void toHtml(StringBuilder sb, String prefix, String suffix) {
+    protected void toHtml(final StringBuilder sb, final String prefix, final String suffix) {
         sb.append(prefix);
         content.toHtml(sb);
         sb.append(suffix);

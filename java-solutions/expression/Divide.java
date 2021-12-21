@@ -3,7 +3,7 @@ package expression;
 import java.math.BigDecimal;
 
 public class Divide extends BinaryOperatorExpression {
-    public Divide(PrioritizedExpression left, PrioritizedExpression right) {
+    public Divide(final PrioritizedExpression left, final PrioritizedExpression right) {
         super(left, right);
     }
 
@@ -14,16 +14,16 @@ public class Divide extends BinaryOperatorExpression {
 
     @Override
     public int getPriorityRight() {
-        return this.getPriority() + 1;
+        return getPriority() + 1;
     }
 
     @Override
-    protected int apply(int left, int right) {
+    protected int apply(final int left, final int right) {
         return left / right;
     }
 
     @Override
-    protected BigDecimal apply(BigDecimal left, BigDecimal right) {
+    protected BigDecimal apply(final BigDecimal left, final BigDecimal right) {
         return left.divide(right);
     }
 

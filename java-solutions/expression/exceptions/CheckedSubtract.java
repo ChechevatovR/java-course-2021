@@ -3,7 +3,7 @@ package expression.exceptions;
 import expression.*;
 
 public class CheckedSubtract extends CheckedBinaryOperatorExpression {
-    public CheckedSubtract(PrioritizedExpression left, PrioritizedExpression right) {
+    public CheckedSubtract(final PrioritizedExpression left, final PrioritizedExpression right) {
         super(left, right);
     }
 
@@ -18,7 +18,7 @@ public class CheckedSubtract extends CheckedBinaryOperatorExpression {
     }
 
     @Override
-    public ExpressionEvaluationException check(int left, int right) {
+    public ExpressionEvaluationException check(final int left, final int right) {
         if (right > 0 && Integer.MIN_VALUE + right > left) {
             return new OverflowException();
         } else if (right < 0 && Integer.MAX_VALUE + right < left) {
@@ -28,7 +28,7 @@ public class CheckedSubtract extends CheckedBinaryOperatorExpression {
     }
 
     @Override
-    protected int apply(int left, int right) {
+    protected int apply(final int left, final int right) {
         return left - right;
     }
 }

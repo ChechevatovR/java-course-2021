@@ -11,20 +11,20 @@ public class IntList {
         length = 0;
     }
 
-    public IntList(int val) {
+    public IntList(final int val) {
         c = new int[1];
         c[0] = val;
         length = 1;
     }
 
-    public void add(int val) {
+    public void add(final int val) {
         if (length == c.length) {
             c = Arrays.copyOf(c, length * 2);
         }
         c[length++] = val;
     }
 
-    public int get(int pos) {
+    public int get(final int pos) {
         return c[pos];
     }
 
@@ -33,7 +33,7 @@ public class IntList {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < length; i++) {
             sb.append(c[i]).append(" ");
         }

@@ -3,7 +3,7 @@ package expression.exceptions;
 import expression.PrioritizedExpression;
 
 public class CheckedLog extends CheckedBinaryOperatorExpression {
-    public CheckedLog(PrioritizedExpression left, PrioritizedExpression right) {
+    public CheckedLog(final PrioritizedExpression left, final PrioritizedExpression right) {
         super(left, right);
     }
 
@@ -19,7 +19,7 @@ public class CheckedLog extends CheckedBinaryOperatorExpression {
 
     @Override
     public int getPriorityRight() {
-        return this.getPriority() - 1;
+        return getPriority() - 1;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class CheckedLog extends CheckedBinaryOperatorExpression {
     }
 
     @Override
-    protected int apply(int left, int right) {
+    protected int apply(int left, final int right) {
         int res = 0;
         while (left >= right) {
             left /= right;

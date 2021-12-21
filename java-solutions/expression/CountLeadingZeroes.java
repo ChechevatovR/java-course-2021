@@ -3,7 +3,7 @@ package expression;
 import java.math.BigDecimal;
 
 public class CountLeadingZeroes extends UnaryOperatorExpression {
-    public CountLeadingZeroes(PrioritizedExpression operand) {
+    public CountLeadingZeroes(final PrioritizedExpression operand) {
         super(operand);
     }
 
@@ -13,12 +13,12 @@ public class CountLeadingZeroes extends UnaryOperatorExpression {
     }
 
     @Override
-    protected int apply(int operand) {
+    protected int apply(final int operand) {
         return Integer.numberOfLeadingZeros(operand);
     }
 
     @Override
-    protected BigDecimal apply(BigDecimal operand) {
+    protected BigDecimal apply(final BigDecimal operand) {
         return new BigDecimal(Integer.numberOfLeadingZeros(operand.intValue()));
     }
 

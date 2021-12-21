@@ -19,7 +19,7 @@ public class CheckedPow extends CheckedBinaryOperatorExpression {
 
     @Override
     public int getPriorityRight() {
-        return this.getPriority() - 1;
+        return getPriority() - 1;
     }
 
     @Override

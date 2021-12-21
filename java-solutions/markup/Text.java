@@ -3,18 +3,18 @@ package markup;
 public class Text implements InlineMarkup {
     protected final String text;
 
-    public Text(String text) {
+    public Text(final String text) {
         this.text = text;
     }
 
     @Override
-    public void toMarkdown(StringBuilder sb) {
-        sb.append(this.text);
+    public void toMarkdown(final StringBuilder sb) {
+        sb.append(text);
     }
 
     @Override
-    public void toHtml(StringBuilder sb) {
-        sb.append(this.text);
+    public void toHtml(final StringBuilder sb) {
+        sb.append(text);
     }
 
 

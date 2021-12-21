@@ -1,42 +1,42 @@
 package expression.parser;
 
 public class BaseParser {
-    protected final static char EOI = 0;
+    protected static final char EOI = 0;
     protected CharSource source;
     protected char ch;
 
     public BaseParser() {}
 
-    public BaseParser(CharSource source) {
+    public BaseParser(final CharSource source) {
         this.source = source;
-        this.take();
+        take();
     }
 
-    private static String formatChar(char c) {
+    private static String formatChar(final char c) {
         return c != EOI ? "" + c : "[end of input]";
     }
 
     protected void revert() {
-        this.ch = this.source.revert();
+        ch = source.revert();
     }
 
-    protected boolean test(char expected) {
-        return this.ch == expected;
+    protected boolean test(final char expected) {
+        return ch == expected;
     }
 
-    protected boolean testBetween(char left, char right) {
-        return left <= this.ch && this.ch <= right;
+    protected boolean testBetween(final char left, final char right) {
+        return left <= ch && ch <= right;
     }
 
     protected char take() {
-        final char result = this.ch;
-        this.ch = this.source.hasNext() ? this.source.next() : EOI;
+        final char result = ch;
+        ch = source.hasNext() ? source.next() : EOI;
         return result;
     }
 
     protected boolean take(final char expected) {
-        if (this.test(expected)) {
-            this.take();
+        if (test(expected)) {
+            take();
             return true;
         } else {
             return false;
@@ -44,24 +44,24 @@ public class BaseParser {
     }
 
     protected void expect(final char expected) {
-       if (!this.take(expected)) {
-           throw this.source.error(formatChar(expected), formatChar(this.ch));
+       if (!take(expected)) {
+           throw source.error(formatChar(expected), formatChar(ch));
        }
     }
 
     protected void expect(final String expected) {
-        for (char exp : expected.toCharArray()) {
-            this.expect(exp);
+        for (final char exp : expected.toCharArray()) {
+            expect(exp);
         }
     }
 
-    protected void expectBetween(char left, char right) {
-        if (!this.testBetween(left, right)) {
-            throw this.source.error(
+    protected void expectBetween(final char left, final char right) {
+        if (!testBetween(left, right)) {
+            throw source.error(
                     "Value between " + formatChar(left) + " and " + formatChar(right),
-                    formatChar(this.ch)
+                    formatChar(ch)
             );
         }
-        this.take();
+        take();
     }
 }

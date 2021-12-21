@@ -5,9 +5,9 @@ public abstract class ExpressionEvaluationException extends RuntimeException {
         super();
     }
 
-    public ExpressionEvaluationException(String message) {
+    public ExpressionEvaluationException(final String message) {
         super(message);
     }
 
-    abstract public String getMessageAsResult();
+    public abstract String getMessageAsResult();
 }

@@ -3,17 +3,17 @@ package markup;
 import java.util.List;
 
 public class Emphasis extends AbstractWrapper implements InlineMarkup {
-    public Emphasis(List<InlineMarkup> children) {
+    public Emphasis(final List<InlineMarkup> children) {
         super(new SimpleParent(children));
     }
 
     @Override
-    public void toMarkdown(StringBuilder sb) {
-        super.toMarkdown(sb, "*", "*");
+    public void toMarkdown(final StringBuilder sb) {
+        toMarkdown(sb, "*", "*");
     }
 
     @Override
-    public void toHtml(StringBuilder sb) {
-        super.toHtml(sb, "<em>", "</em>");
+    public void toHtml(final StringBuilder sb) {
+        toHtml(sb, "<em>", "</em>");
     }
 }

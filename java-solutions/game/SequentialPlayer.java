@@ -1,10 +1,10 @@
 package game;
 
 public class SequentialPlayer implements Player {
-    private boolean drawAgreement = false;
+    private boolean drawAgreement;
 
     @Override
-    public Move makeMove(Position position) {
+    public Move makeMove(final Position position) {
         for (int y = 0; y < position.getN(); y++) {
             for (int x = 0; x < position.getM(); x++) {
                 final Move move = new Move(x, y, position.getCurPlayerCell());
@@ -17,8 +17,8 @@ public class SequentialPlayer implements Player {
     }
 
     @Override
-    public boolean askForDraw(Position position) {
-        boolean res = drawAgreement;
+    public boolean askForDraw(final Position position) {
+        final boolean res = drawAgreement;
         drawAgreement = !drawAgreement;
         return res;
     }

@@ -6,10 +6,10 @@ public interface PrioritizedExpression extends Expression, TripleExpression, Big
     }
 
     default int getPriorityLeft() {
-        return this.getPriority();
+        return getPriority();
     }
 
     default int getPriorityRight() {
-        return this.getPriority();
+        return getPriority();
     }
 }

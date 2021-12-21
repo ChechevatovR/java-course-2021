@@ -3,7 +3,7 @@ package expression;
 import java.math.BigDecimal;
 
 public class Multiply extends BinaryOperatorExpression {
-    public Multiply(PrioritizedExpression left, PrioritizedExpression right) {
+    public Multiply(final PrioritizedExpression left, final PrioritizedExpression right) {
         super(left, right);
     }
 
@@ -13,12 +13,12 @@ public class Multiply extends BinaryOperatorExpression {
     }
 
     @Override
-    protected int apply(int left, int right) {
+    protected int apply(final int left, final int right) {
         return left * right;
     }
 
     @Override
-    protected BigDecimal apply(BigDecimal left, BigDecimal right) {
+    protected BigDecimal apply(final BigDecimal left, final BigDecimal right) {
         return left.multiply(right);
     }
 

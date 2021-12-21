@@ -1,5 +1,5 @@
 package game;
 
 public enum MoveResult {
-    INVALID, NOT_FINISHED, WIN, LOSS, DRAW, DRAW_REQUEST;
+    INVALID, NOT_FINISHED, WIN, LOSS, DRAW, DRAW_REQUEST
 }

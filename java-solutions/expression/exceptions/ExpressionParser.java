@@ -128,7 +128,7 @@ public class ExpressionParser extends BaseParser implements Parser {
     }
 
     private Const parseConst(final String s) {
-        StringBuilder sb = new StringBuilder(s);
+        final StringBuilder sb = new StringBuilder(s);
         do {
             sb.append(take());
         } while (testBetween('0', '9'));

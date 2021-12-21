@@ -3,7 +3,7 @@ package expression;
 import java.math.BigDecimal;
 
 public class CountTrailingZeroes extends UnaryOperatorExpression {
-    public CountTrailingZeroes(PrioritizedExpression operand) {
+    public CountTrailingZeroes(final PrioritizedExpression operand) {
         super(operand);
     }
 
@@ -13,12 +13,12 @@ public class CountTrailingZeroes extends UnaryOperatorExpression {
     }
 
     @Override
-    protected int apply(int operand) {
+    protected int apply(final int operand) {
         return Integer.numberOfTrailingZeros(operand);
     }
 
     @Override
-    protected BigDecimal apply(BigDecimal operand) {
+    protected BigDecimal apply(final BigDecimal operand) {
         return new BigDecimal(Integer.numberOfTrailingZeros(operand.intValue()));
     }
 

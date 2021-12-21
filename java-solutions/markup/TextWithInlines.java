@@ -4,7 +4,7 @@ import java.util.List;
 
 public class TextWithInlines extends SimpleParent implements InlineMarkup {
 
-    public TextWithInlines(List<InlineMarkup> children) {
+    public TextWithInlines(final List<InlineMarkup> children) {
         super(children);
     }
 }

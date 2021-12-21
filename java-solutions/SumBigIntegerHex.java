@@ -1,7 +1,7 @@
 import java.math.BigInteger;
 
 public class SumBigIntegerHex {
-    static BigInteger toNumberSafe(String s) {
+    static BigInteger toNumberSafe(final String s) {
         if (s.isEmpty()) {
             return BigInteger.ZERO;
         } else if (s.startsWith("0x") || s.startsWith("0X")) {
@@ -11,10 +11,10 @@ public class SumBigIntegerHex {
         }
     }    
     
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         BigInteger result = BigInteger.ZERO;
         for (int i = 0; i < args.length; i++) {
-            String arg = args[i];
+            final String arg = args[i];
             int substringBegin = -1;
             
             for (int j = 0; j < arg.length(); j++) {

@@ -24,18 +24,18 @@ public class MNKPosition implements Position {
 
     @Override
     public int getCurPlayerInd() {
-        return this.curPlayerInd;
+        return curPlayerInd;
     }
 
-    public MNKPosition(Cell[][] field, int k, int curPlayerInd, Cell curPlayerCell, int turnsDone) {
+    public MNKPosition(final Cell[][] field, final int k, final int curPlayerInd, final Cell curPlayerCell, final int turnsDone) {
         this.field = field;
-        this.m = field[0].length;
-        this.n = field.length;
+        m = field[0].length;
+        n = field.length;
         this.k = k;
         this.curPlayerInd = curPlayerInd;
         this.curPlayerCell = curPlayerCell;
         this.turnsDone = turnsDone;
-        this.mPadWidth = (int) (Math.log10(this.m) + 1);
+        mPadWidth = (int) (Math.log10(m) + 1);
     }
 
     @Override
@@ -55,42 +55,42 @@ public class MNKPosition implements Position {
 
     @Override
     public Cell getCurPlayerCell() {
-        return this.curPlayerCell;
+        return curPlayerCell;
     }
 
     @Override
-    public Cell getCell(int x, int y) {
+    public Cell getCell(final int x, final int y) {
         // Throws ArrayIndexOutOfBounds on illegal x, y
         // Understandable and must be expected
-        return this.field[y][x];
+        return field[y][x];
     }
 
     @Override
     public int getTurnsDone() {
-        return this.turnsDone;
+        return turnsDone;
     }
 
-    public boolean isValid(Move move) {
+    public boolean isValid(final Move move) {
         return move != null
-                && 0 <= move.getY() && move.getY() < this.n
-                && 0 <= move.getX() && move.getX() < this.m
+                && 0 <= move.getY() && move.getY() < n
+                && 0 <= move.getX() && move.getX() < m
                 && field[move.getY()][move.getX()] == Cell.E
-                && this.curPlayerCell == move.getVal();
+                && curPlayerCell == move.getVal();
     }
 
     @Override
     public String toHumanReadableString() {
-        StringBuilder sb = new StringBuilder(" ");
-        for (int i = 1; i <= this.m; i++) {
+        final StringBuilder sb = new StringBuilder(" ");
+        for (int i = 1; i <= m; i++) {
             sb.append(StringPadder.pad(Integer.toString(i), " ", mPadWidth)).append(" ");
         }
         sb.append(System.lineSeparator());
-        for (int y = 0; y < this.n; y++) {
-            String yS = Integer.toString(y + 1);
+        for (int y = 0; y < n; y++) {
+            final String yS = Integer.toString(y + 1);
             sb.append(" ".repeat(y - yS.length() + 1));
             sb.append(yS).append(" ");
-            for (int x = 0; x < this.m; x++) {
-                sb.append(StringPadder.pad(CELL_TO_STRING.get(this.field[y][x]), " ", mPadWidth)).append(" ");
+            for (int x = 0; x < m; x++) {
+                sb.append(StringPadder.pad(CELL_TO_STRING.get(field[y][x]), " ", mPadWidth)).append(" ");
             }
             sb.append(System.lineSeparator());
         }

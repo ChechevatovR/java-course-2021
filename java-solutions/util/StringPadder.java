@@ -1,9 +1,9 @@
 package util;
 
 public class StringPadder {
-    static public String pad(String s, String fill, int length) {
-        int charToAdd = Math.max(0, length - s.length());
-        int repeatTimes = (charToAdd + fill.length() - 1) / fill.length();
+    public static String pad(final String s, final String fill, final int length) {
+        final int charToAdd = Math.max(0, length - s.length());
+        final int repeatTimes = (charToAdd + fill.length() - 1) / fill.length();
         return fill.repeat(repeatTimes) + s;
     }
 }
