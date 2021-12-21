@@ -1,6 +1,6 @@
 package expression.exceptions;
 
-public class LogarithmBaseException extends ExpressionEvaluationException {
+public class LogarithmBaseException extends FunctionDomainException {
     public LogarithmBaseException() {
         super();
     }

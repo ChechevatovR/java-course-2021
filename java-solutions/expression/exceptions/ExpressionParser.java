@@ -6,151 +6,142 @@ import expression.Variable;
 import expression.parser.BaseParser;
 import expression.parser.StringSource;
 
-public class ExpressionParser extends BaseParser implements expression.exceptions.Parser {
-    public ExpressionParser() {
-        super();
-    }
-
+public class ExpressionParser extends BaseParser implements Parser {
     @Override
-    public PrioritizedExpression parse(String expression) throws ExpressionParsingException {
-        this.source = new StringSource(expression);
-        this.take();
-        PrioritizedExpression result = this.parseExpression();
-        this.expect(EOI);
+    public PrioritizedExpression parse(final String expression) throws ExpressionParsingException {
+        source = new StringSource(expression);
+        take();
+        final PrioritizedExpression result = parseExpression();
+        expect(EOI);
         return result;
     }
 
     private PrioritizedExpression parseExpression() throws ExpressionParsingException {
-        return this.parseShift();
+        return parseShift();
     }
 
     private PrioritizedExpression parseShift() throws ExpressionParsingException {
-        PrioritizedExpression result = this.parseAddition();
-        this.skipWhitespaces();
-        while (this.test('<') || this.test('>')) {
-            if (this.take('<')) {
-                this.expect('<');
-                result = new CheckedShiftLeft(result, this.parseAddition());
-            } else if (this.take('>')) {
-                this.expect('>');
-                if (!this.take('>')) {
-                    result = new CheckedShiftRightArifm(result, this.parseAddition());
+        PrioritizedExpression result = parseAddition();
+        skipWhitespaces();
+        while (true) {
+            if (take('<')) {
+                expect('<');
+                result = new CheckedShiftLeft(result, parseAddition());
+            } else if (take('>')) {
+                expect('>');
+                if (!take('>')) {
+                    result = new CheckedShiftRightArifm(result, parseAddition());
                 } else {
-                    result = new CheckedShiftRight(result, this.parseAddition());
+                    result = new CheckedShiftRight(result, parseAddition());
                 }
+            } else {
+                return result;
             }
-            this.skipWhitespaces();
+            skipWhitespaces();
         }
-        return result;
     }
 
     private PrioritizedExpression parseAddition() throws ExpressionParsingException {
-        PrioritizedExpression result = this.parseMultiplication();
-        this.skipWhitespaces();
-        while (this.test('+') || this.test('-')) {
-            if (this.take('+')) {
-                result = new CheckedAdd(result, this.parseMultiplication());
-            } else if (this.take('-')) {
-                result = new CheckedSubtract(result, this.parseMultiplication());
+        PrioritizedExpression result = parseMultiplication();
+        skipWhitespaces();
+        while (test('+') || test('-')) {
+            if (take('+')) {
+                result = new CheckedAdd(result, parseMultiplication());
+            } else if (take('-')) {
+                result = new CheckedSubtract(result, parseMultiplication());
             }
-            this.skipWhitespaces();
+            skipWhitespaces();
         }
         return result;
     }
 
     private PrioritizedExpression parseMultiplication() throws ExpressionParsingException {
-        PrioritizedExpression result = this.parsePowLog();
-        this.skipWhitespaces();
-        while (this.test('*') || this.test('/')) {
-            if (this.take('*')) {
-                result = new CheckedMultiply(result, this.parsePowLog());
-            } else if (this.take('/')) {
-                result = new CheckedDivide(result, this.parsePowLog());
+        PrioritizedExpression result = parsePowLog();
+        skipWhitespaces();
+        while (test('*') || test('/')) {
+            if (take('*')) {
+                result = new CheckedMultiply(result, parsePowLog());
+            } else if (take('/')) {
+                result = new CheckedDivide(result, parsePowLog());
             }
-            this.skipWhitespaces();
+            skipWhitespaces();
         }
         return result;
     }
 
     private PrioritizedExpression parsePowLog() throws ExpressionParsingException {
-        PrioritizedExpression result = this.parseUnary();
-        this.skipWhitespaces();
-        while (this.test('*') || this.test('/')) {
-            if (this.take('*')) {
-                if (!this.take('*')) {
-                    this.revert();
+        PrioritizedExpression result = parseUnary();
+        skipWhitespaces();
+        while (test('*') || test('/')) {
+            if (take('*')) {
+                if (!take('*')) {
+                    revert();
                     return result;
                 }
-                result = new CheckedPow(result, this.parseUnary());
-            } else if (this.take('/')) {
-                if (!this.take('/')) {
-                    this.revert();
+                result = new CheckedPow(result, parseUnary());
+            } else if (take('/')) {
+                if (!take('/')) {
+                    revert();
                     return result;
                 }
-                result = new CheckedLog(result, this.parseUnary());
+                result = new CheckedLog(result, parseUnary());
             }
-            this.skipWhitespaces();
+            skipWhitespaces();
         }
         return result;
     }
 
     private PrioritizedExpression parseBraces() throws ExpressionParsingException {
-        PrioritizedExpression result = this.parseExpression();
-        this.expect(')');
+        final PrioritizedExpression result = parseExpression();
+        expect(')');
         return result;
     }
 
     private PrioritizedExpression parseUnary() throws ExpressionParsingException {
-        this.skipWhitespaces();
-        if (this.take('-')) {
-            if (this.testBetween('0', '9')) {
-                this.revert();
-                return this.parseValue();
+        skipWhitespaces();
+        if (test('-')) {
+            if (testBetween('0', '9')) {
+                return parseConst(new StringBuilder("-"));
+            } else {
+                return new CheckedNegate(parseUnary());
             }
-            return new CheckedNegate(this.parseUnary());
-        } else if (this.take('a')) {
-            this.expect("bs");
-            boolean skipped = this.skipWhitespaces();
-            if (this.take('(')) {
-                return new CheckedAbs(this.parseBraces());
+            // :NOTE: Идентификаторы
+        } else if (take('a')) {
+            expect("bs");
+            final boolean skipped = skipWhitespaces();
+            if (take('(')) {
+                return new CheckedAbs(parseBraces());
             } else {
                 if (!skipped) {
-                    throw this.source.error("Whitespace", "not found any");
+                    throw source.error("Whitespace", "not found any");
                 }
-                return new CheckedAbs(this.parseUnary());
+                return new CheckedAbs(parseUnary());
             }
-
+        } else if (take('(')) {
+            return parseBraces();
+        } else if (test('x') || test('y') || test('z')) {
+            return new Variable(String.valueOf(take()));
         } else {
-            return this.parseValue();
+            return parseConst(new StringBuilder());
         }
     }
 
-    private PrioritizedExpression parseValue() throws ExpressionParsingException {
-        this.skipWhitespaces();
-        if (this.take('(')) {
-            return this.parseBraces();
-        } else if (this.take('0')) {
-            return new Const(0);
-        } else if (this.test('x') || this.test('y') || this.test('z')) {
-            return new Variable("" + this.take());
-        } else {
-            StringBuilder sb = new StringBuilder(this.take('-') ? "-" : "");
-            do {
-                sb.append(this.take());
-            } while (this.testBetween('0', '9'));
-            try {
-                return new Const(Integer.parseInt(sb.toString()));
-            } catch (NumberFormatException e) {
-                throw this.source.error("int number", sb.toString());
-            }
+    private Const parseConst(final StringBuilder sb) {
+        do {
+            sb.append(take());
+        } while (testBetween('0', '9'));
+        try {
+            return new Const(Integer.parseInt(sb.toString()));
+        } catch (final NumberFormatException e) {
+            throw source.error("int number", sb.toString());
         }
     }
 
     private boolean skipWhitespaces() {
         boolean skipped = false;
-        while (Character.isWhitespace(this.ch)) {
+        while (Character.isWhitespace(ch)) {
             skipped = true;
-            this.take();
+            take();
         }
         return skipped;
     }

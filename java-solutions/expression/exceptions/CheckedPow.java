@@ -3,7 +3,7 @@ package expression.exceptions;
 import expression.PrioritizedExpression;
 
 public class CheckedPow extends CheckedBinaryOperatorExpression {
-    public CheckedPow(PrioritizedExpression left, PrioritizedExpression right) {
+    public CheckedPow(final PrioritizedExpression left, final PrioritizedExpression right) {
         super(left, right);
     }
 
@@ -59,8 +59,8 @@ public class CheckedPow extends CheckedBinaryOperatorExpression {
         return res;
     }
 
-    private static int checkedMultiply(int left, int right) {
-        ExpressionEvaluationException e = CheckedMultiply.checkStatic(left, right);
+    private static int checkedMultiply(final int left, final int right) {
+        final ExpressionEvaluationException e = CheckedMultiply.checkStatic(left, right);
         if (e != null) {
             throw e;
         }

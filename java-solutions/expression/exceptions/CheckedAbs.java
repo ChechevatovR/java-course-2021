@@ -3,7 +3,7 @@ package expression.exceptions;
 import expression.PrioritizedExpression;
 
 public class CheckedAbs extends CheckedUnaryOperatorExpression {
-    public CheckedAbs(PrioritizedExpression operand) {
+    public CheckedAbs(final PrioritizedExpression operand) {
         super(operand);
     }
 
@@ -18,7 +18,7 @@ public class CheckedAbs extends CheckedUnaryOperatorExpression {
     }
 
     @Override
-    public ExpressionEvaluationException check(int operand) {
+    public ExpressionEvaluationException check(final int operand) {
         if (operand == Integer.MIN_VALUE) {
             return new OverflowException();
         }
@@ -26,7 +26,7 @@ public class CheckedAbs extends CheckedUnaryOperatorExpression {
     }
 
     @Override
-    protected int apply(int operand) {
+    protected int apply(final int operand) {
         if (operand < 0) {
             return -operand;
         } else {
